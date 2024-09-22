@@ -84,7 +84,7 @@ const BlogCard = ({ blog }) => {
   };
 
   return (
-    <div className="relative bg-purple-100 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden w-80 transform hover:scale-105">
+    <div className="relative bg-purple-100 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden w-80 transform hover:scale-105 flex flex-col">
       {/* Blog Image */}
       <div className="overflow-hidden">
         <img
@@ -94,13 +94,15 @@ const BlogCard = ({ blog }) => {
         />
       </div>
       {/* Blog Content */}
-      <div className="p-5">
-        <h2 className="text-2xl font-bold text-purple-600 mb-2">
-          {blog.title}
-        </h2>
-        <p className="text-sm text-gray-700 mb-4 line-clamp-3">{blog.brief}</p>
+      <div className="p-5 flex-grow flex flex-col">
+        <div className="flex-grow">
+          <h2 className="text-2xl font-bold text-purple-600 mb-2">
+            {blog.title}
+          </h2>
+          <p className="text-sm text-gray-700 mb-4">{blog.brief}</p>
+        </div>
         {/* Uploader and Date */}
-        <div className="text-xs text-gray-500 mb-4">
+        <div className="mt-auto text-xs text-gray-500">
           <span>Uploaded by: {blog.uploader}</span>
           <br />
           <span>{blog.date}</span>

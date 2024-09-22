@@ -10,5 +10,4 @@ const firebaseConfig = {
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
 };
 
-
 export const app = initializeApp(firebaseConfig);

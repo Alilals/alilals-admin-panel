@@ -31,6 +31,21 @@ const BlogForm = () => {
   // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Check word count for the brief field
+    if (name === "brief") {
+      const wordCount = value.trim().split(/\s+/).length;
+
+      if (wordCount > 50) {
+        toast({
+          title: "Word limit exceeded!",
+          description: "Brief cannot exceed 50 words.",
+          className: "bg-red-500 text-white border border-red-700",
+        });
+        return; // Prevent further updates if the word count exceeds 50
+      }
+    }
+
     setFormData({
       ...formData,
       [name]: value,
@@ -191,7 +206,7 @@ const BlogForm = () => {
                 className="block text-purple-600 font-bold mb-2"
                 htmlFor="brief"
               >
-                Brief
+                Brief (Max 50 words)
               </label>
               <textarea
                 name="brief"
@@ -203,6 +218,9 @@ const BlogForm = () => {
                 placeholder="Enter a brief description of the blog"
                 required
               />
+              <p className="text-sm text-gray-500">
+                {formData.brief.trim().split(/\s+/).length} / 50 words
+              </p>
             </div>
 
             {/* Image Upload Field */}
