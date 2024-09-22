@@ -84,7 +84,7 @@ const BlogCard = ({ blog }) => {
   };
 
   return (
-    <div className="relative bg-purple-100 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden w-80 transform hover:scale-105 flex flex-col">
+    <div className="relative bg-green-100 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden w-80 transform hover:scale-105 flex flex-col">
       {/* Blog Image */}
       <div className="overflow-hidden">
         <img
@@ -96,7 +96,7 @@ const BlogCard = ({ blog }) => {
       {/* Blog Content */}
       <div className="p-5 flex-grow flex flex-col">
         <div className="flex-grow">
-          <h2 className="text-2xl font-bold text-purple-600 mb-2">
+          <h2 className="text-2xl font-bold text-green-600 mb-2">
             {blog.title}
           </h2>
           <p className="text-sm text-gray-700 mb-4">{blog.brief}</p>
@@ -111,10 +111,10 @@ const BlogCard = ({ blog }) => {
       {/* More Options Button */}
       <button
         ref={buttonRef}
-        className="absolute top-4 right-4 bg-purple-200 p-2 rounded-full hover:bg-purple-300 transition-colors"
+        className="absolute top-4 right-4 bg-white p-2 rounded-full hover:bg-green-200 transition-colors"
         onClick={togglePopup}
       >
-        <MoreVertical className="text-purple-600" />
+        <MoreVertical className="text-green-600" />
       </button>
       {/* Edit/Delete Popup */}
       {showPopup && (
@@ -141,11 +141,11 @@ const BlogCard = ({ blog }) => {
       <AlertDialog
         open={open}
         onOpenChange={setOpen}
-        className="bg-purple-100 rounded-lg shadow-lg"
+        className="bg-green-100 rounded-lg shadow-lg"
       >
         <AlertDialogContent className="bg-white rounded-lg p-6">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-purple-700 text-2xl font-bold">
+            <AlertDialogTitle className="text-green-700 text-2xl font-bold">
               Are you absolutely sure?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600">
@@ -155,13 +155,13 @@ const BlogCard = ({ blog }) => {
           <AlertDialogFooter>
             <AlertDialogCancel
               onClick={() => setOpen(false)}
-              className=" hover:bg-purple-50"
+              className=" hover:bg-green-50"
             >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={deleteHandler}
-              className="bg-purple-500 hover:bg-purple-700"
+              className="bg-green-500 hover:bg-green-700"
             >
               Continue
             </AlertDialogAction>

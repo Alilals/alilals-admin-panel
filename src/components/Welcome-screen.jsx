@@ -4,7 +4,7 @@ const WelcomeScreen = () => {
   return (
     <div className="flex flex-col md:flex-row h-screen">
       {/* Main Content */}
-      <div className="flex-grow p-6 flex flex-col justify-center items-center bg-gradient-to-br from-purple-700 via-purple-500 to-purple-300 animate-gradient-x">
+      <div className="flex-grow p-6 flex flex-col justify-center items-center bg-gradient-to-br from-green-700 via-green-500 to-green-300 animate-gradient-x">
         {/* Welcome Text */}
         <h1 className="text-5xl font-extrabold text-white mb-4 text-center drop-shadow-lg animate-bounce">
           Welcome to the Alilals Admin Panel
@@ -16,7 +16,7 @@ const WelcomeScreen = () => {
 
         {/* CTA Button */}
         <Link href="https://google.com" target="_blank">
-          <div className="bg-white text-purple-700 px-8 py-4 rounded-full font-semibold hover:bg-purple-600 hover:text-white transition-transform transform hover:scale-105 shadow-lg">
+          <div className="bg-white text-green-700 px-8 py-4 rounded-full font-semibold hover:bg-green-600 hover:text-white transition-transform transform hover:scale-105 shadow-lg">
             Visit Main Website
           </div>
         </Link>

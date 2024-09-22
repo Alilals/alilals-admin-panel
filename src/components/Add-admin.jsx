@@ -54,14 +54,14 @@ const AddAdmin = () => {
     <Dialog
       open={open}
       onOpenChange={setOpen}
-      className="bg-purple-100 rounded-lg shadow-lg"
+      className="bg-green-100 rounded-lg shadow-lg"
     >
       <DialogTrigger>
         <AddButton label="Add Admin" />
       </DialogTrigger>
       <DialogContent className="bg-white rounded-lg p-6">
         <DialogHeader>
-          <DialogTitle className="text-purple-700 text-2xl font-bold">
+          <DialogTitle className="text-green-700 text-2xl font-bold">
             Add Admin
           </DialogTitle>
           <DialogDescription className="text-gray-600">
@@ -92,7 +92,7 @@ const AddAdmin = () => {
           />
           <button
             type="submit"
-            className="flex items-center justify-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            className="flex items-center justify-center bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105"
           >
             Add Admin
           </button>

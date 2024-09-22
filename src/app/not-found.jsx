@@ -7,7 +7,7 @@ const NotFound = () => {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-purple-400 via-purple-600 to-purple-900 text-white">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-green-400 via-green-600 to-green-900 text-white">
       <div className="text-center">
         <h1 className="text-9xl font-extrabold animate-pulse">404</h1>
         <h2 className="text-4xl font-bold mt-4">Oops! Page Not Found</h2>
@@ -26,7 +26,7 @@ const NotFound = () => {
       </div>
 
       <button
-        className="mt-8 bg-white text-purple-700 font-bold py-3 px-6 rounded-lg shadow-md hover:bg-purple-700 hover:text-white transition duration-300 transform hover:scale-110"
+        className="mt-8 bg-white text-green-700 font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-700 hover:text-white transition duration-300 transform hover:scale-110"
         onClick={() => router.push("/")}
       >
         Go Back Home

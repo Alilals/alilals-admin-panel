@@ -38,18 +38,18 @@ const DashboardCards = () => {
           return (
             <div
               key={key}
-              className="relative w-80 h-48 bg-purple-100 py-8 px-5 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:scale-105"
+              className="relative w-80 h-48 bg-green-100 py-8 px-5 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 transform hover:scale-105"
             >
-              <div className="text-3xl font-bold text-purple-600 mb-6">
+              <div className="text-3xl font-bold text-green-600 mb-6">
                 {card.title}
               </div>
               <div className="text-4xl font-extrabold text-gray-800">
                 {card.count}
               </div>
-              <div className="absolute top-6 right-6 bg-purple-300 p-3 rounded-full">
-                {<IconComponent className="text-purple-700 h-8 w-8" />}
+              <div className="absolute top-6 right-6 bg-green-300 p-3 rounded-full">
+                {<IconComponent className="text-green-700 h-8 w-8" />}
               </div>
-              <div className="absolute inset-0 rounded-xl bg-purple-200 opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 rounded-xl bg-green-200 opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
             </div>
           );
         })}

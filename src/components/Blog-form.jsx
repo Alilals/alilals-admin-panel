@@ -175,15 +175,15 @@ const BlogForm = () => {
     <div className="max-w-7xl mx-auto p-8 mt-10">
       <div className="flex gap-8">
         {/* Form Section */}
-        <div className="w-full bg-purple-50 p-8 rounded-xl shadow-lg">
-          <h2 className="text-3xl font-bold text-purple-700 mb-6 text-center">
+        <div className="w-full bg-green-50 p-8 rounded-xl shadow-lg">
+          <h2 className="text-3xl font-bold text-green-700 mb-6 text-center">
             {blogId ? "Edit Your Blog" : "Create a New Blog"}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title Field */}
             <div>
               <label
-                className="block text-purple-600 font-bold mb-2"
+                className="block text-green-600 font-bold mb-2"
                 htmlFor="title"
               >
                 Title
@@ -194,7 +194,7 @@ const BlogForm = () => {
                 id="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="w-full p-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 placeholder="Enter blog title"
                 required
               />
@@ -203,7 +203,7 @@ const BlogForm = () => {
             {/* Brief Field */}
             <div>
               <label
-                className="block text-purple-600 font-bold mb-2"
+                className="block text-green-600 font-bold mb-2"
                 htmlFor="brief"
               >
                 Brief (Max 50 words)
@@ -213,7 +213,7 @@ const BlogForm = () => {
                 id="brief"
                 value={formData.brief}
                 onChange={handleChange}
-                className="w-full p-3 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 rows="4"
                 placeholder="Enter a brief description of the blog"
                 required
@@ -226,7 +226,7 @@ const BlogForm = () => {
             {/* Image Upload Field */}
             <div>
               <label
-                className="block text-purple-600 font-bold mb-2"
+                className="block text-green-600 font-bold mb-2"
                 htmlFor="image"
               >
                 Upload Image
@@ -237,14 +237,14 @@ const BlogForm = () => {
                 id="image"
                 accept="image/*"
                 onChange={handleImageChange}
-                className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-100 file:text-purple-600 hover:file:bg-purple-200"
+                className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-600 hover:file:bg-green-200"
               />
             </div>
 
             {/* Image Preview */}
             {imagePreview && (
               <div className="mt-6">
-                <p className="text-purple-600 font-bold mb-2">Image Preview:</p>
+                <p className="text-green-600 font-bold mb-2">Image Preview:</p>
                 <img
                   src={imagePreview}
                   alt="Selected Preview"
@@ -256,7 +256,7 @@ const BlogForm = () => {
             {/* ReactQuill Editor */}
             <div>
               <label
-                className="block text-purple-600 font-bold mb-2"
+                className="block text-green-600 font-bold mb-2"
                 htmlFor="content"
               >
                 Blog Content
@@ -264,6 +264,7 @@ const BlogForm = () => {
               <div className="mb-6">
                 <ReactQuill
                   theme="snow"
+                  className="bg-white"
                   value={content}
                   onChange={setContent}
                   placeholder="Write your blog content here..."
@@ -293,7 +294,7 @@ const BlogForm = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="px-6 py-3 bg-purple-600 text-white font-bold rounded-full hover:bg-purple-700 focus:outline-none focus:ring-4 focus:ring-purple-500"
+                className="px-6 py-3 bg-green-600 text-white font-bold rounded-full hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-500"
               >
                 {loading
                   ? blogId

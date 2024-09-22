@@ -11,7 +11,7 @@ const AdminPage = () => {
 
       {/* Info and Actions */}
       <div className="my-10 mx-6">
-        <div className="font-mono mb-5 flex justify-between items-center bg-purple-50 p-5 rounded-lg shadow-md border border-purple-100">
+        <div className="font-mono mb-5 flex justify-between items-center bg-green-50 p-5 rounded-lg shadow-md border border-green-100">
           {/* Admin Info */}
           <div className="text-gray-700">
             <div className="text-lg mb-2">

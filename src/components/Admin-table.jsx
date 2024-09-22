@@ -60,7 +60,7 @@ const AdminTable = () => {
   return (
     <div className="overflow-auto">
       <table className="min-w-full bg-white rounded-lg shadow-md">
-        <thead className="bg-purple-600 text-white">
+        <thead className="bg-green-600 text-white">
           <tr>
             <th className="py-3 px-5 text-left">Name</th>
             <th className="py-3 px-5 text-left">Email</th>
@@ -74,14 +74,14 @@ const AdminTable = () => {
                 key={admin.id}
                 className={`border-t border-gray-200 transition-colors ${
                   admin.email === currentUser.email
-                    ? "bg-purple-100 hover:bg-purple-200"
-                    : "hover:bg-purple-50"
+                    ? "bg-green-100 hover:bg-green-200"
+                    : "hover:bg-green-50"
                 }`}
               >
                 <td className="py-3 px-5 flex items-center">
                   {admin.name}
                   {admin.email === currentUser.email && (
-                    <span className="text-xs bg-purple-600 text-white px-2 py-1 rounded-full ml-2">
+                    <span className="text-xs bg-green-600 text-white px-2 py-1 rounded-full ml-2">
                       Current Admin
                     </span>
                   )}
@@ -105,11 +105,11 @@ const AdminTable = () => {
       <AlertDialog
         open={open}
         onOpenChange={setOpen}
-        className="bg-purple-100 rounded-lg shadow-lg"
+        className="bg-green-100 rounded-lg shadow-lg"
       >
         <AlertDialogContent className="bg-white rounded-lg p-6">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-purple-700 text-2xl font-bold">
+            <AlertDialogTitle className="text-green-700 text-2xl font-bold">
               Are you absolutely sure?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600">
@@ -120,13 +120,13 @@ const AdminTable = () => {
           <AlertDialogFooter>
             <AlertDialogCancel
               onClick={() => setOpen(false)}
-              className=" hover:bg-purple-50"
+              className=" hover:bg-green-50"
             >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDeleteAdmin}
-              className="bg-purple-500 hover:bg-purple-700"
+              className="bg-green-500 hover:bg-green-700"
             >
               Continue
             </AlertDialogAction>

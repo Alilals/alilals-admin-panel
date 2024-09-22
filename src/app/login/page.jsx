@@ -58,15 +58,13 @@ const page = () => {
   }, [currentUser, router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-400 via-purple-600 to-purple-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-400 via-green-600 to-green-900">
       <div className="bg-white shadow-md rounded-lg p-10 text-center max-w-md w-full">
-        <h1 className="text-3xl font-bold text-purple-700 mb-6">
-          Welcome Back
-        </h1>
+        <h1 className="text-3xl font-bold text-green-700 mb-6">Welcome Back</h1>
         <p className="mb-6 text-gray-600">Sign in to access the admin panel</p>
         <button
           onClick={handleGoogleLogin}
-          className="flex items-center justify-center w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400"
+          className="flex items-center justify-center w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-400"
         >
           <FcGoogle className="w-6 h-6 mr-2" /> Sign in with Google
         </button>

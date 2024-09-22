@@ -25,11 +25,11 @@ const Sidebar = () => {
   return (
     <div className={`flex ${!currentUser ? "hidden" : ""}`}>
       {/* Sidebar */}
-      <div className="bg-gray-100 text-gray-800 w-64 min-h-screen flex flex-col justify-between shadow-lg">
+      <div className="bg-green-50 text-gray-800 w-64 min-h-screen flex flex-col justify-between shadow-lg">
         <div className="p-6">
           {/* Logo */}
           <Link href="/">
-            <h1 className="text-3xl font-extrabold text-purple-700 mb-8 transition-colors hover:text-purple-500">
+            <h1 className="text-3xl font-extrabold text-green-700 mb-8 transition-colors hover:text-green-500">
               Alilals Admin
             </h1>
           </Link>
@@ -39,7 +39,7 @@ const Sidebar = () => {
             <li>
               <Link
                 href="/admin/dashboard"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-purple-100 hover:text-purple-700 ${pathname === "/admin/dashboard" ? "bg-purple-100 text-purple-700 shadow-md" : ""}`}
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/dashboard" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
               >
                 <LayoutDashboard className="w-5 h-5 mr-3" />
                 Dashboard
@@ -49,7 +49,7 @@ const Sidebar = () => {
             <li>
               <Link
                 href="/admin/blogs"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-purple-100 hover:text-purple-700 ${pathname === "/admin/blogs" ? "bg-purple-100 text-purple-700 shadow-md" : ""}`}
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/blogs" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
               >
                 <Newspaper className="w-5 h-5 mr-3" />
                 Blogs
@@ -59,7 +59,7 @@ const Sidebar = () => {
             <li>
               <Link
                 href="/admin/admins"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-purple-100 hover:text-purple-700 ${pathname === "/admin/admins" ? "bg-purple-100 text-purple-700 shadow-md" : ""}`}
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/admins" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
               >
                 <Settings className="w-5 h-5 mr-3" />
                 Admins
@@ -69,7 +69,7 @@ const Sidebar = () => {
             <li>
               <div
                 onClick={logoutHandler}
-                className="flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-purple-100 hover:text-purple-700 cursor-pointer"
+                className="flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 cursor-pointer"
               >
                 <LogOut className="w-5 h-5 mr-3" />
                 Logout
@@ -79,13 +79,13 @@ const Sidebar = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-purple-200 text-purple-800 text-center">
+        <div className="p-4 bg-green-200 text-green-800 text-center">
           &copy; 2024 Alilas
           <br />
           Made by{" "}
           <a
             href="https://harudstudios.framer.website"
-            className="underline hover:text-purple-500"
+            className="underline hover:text-green-500"
           >
             Harud Studios
           </a>
