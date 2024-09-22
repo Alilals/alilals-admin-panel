@@ -3,11 +3,28 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useFirestore } from "@/contexts/FirestoreContext";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const BlogCard = ({ blog }) => {
+  const { deleteData } = useFirestore();
+  const { toast } = useToast();
   const [showPopup, setShowPopup] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedBlog, setSelectedBlog] = useState(null); // blog to be deleted
   const popupRef = useRef(null); // To reference the popup element
-  const buttonRef = useRef(null); // Reference for the 2-dot button
+  const buttonRef = useRef(null); // Reference for the 3-dot button
   const router = useRouter(); // For navigating to blog details
 
   const togglePopup = (event) => {
@@ -40,17 +57,42 @@ const BlogCard = ({ blog }) => {
 
   // Navigate to the edit blog page
   const handleEdit = () => {
-    router.push(`/blogs/${blog.id}`);
+    router.push(`blogs/addblog?blogId=${blog.id}`);
+  };
+
+  const triggerDelete = (admin) => {
+    setSelectedBlog(admin);
+    setShowPopup(false);
+    setOpen(true);
+  };
+
+  const deleteHandler = async () => {
+    try {
+      const result = await deleteData(selectedBlog.id, "blogs");
+      toast({
+        title: result.message,
+        description: "",
+        className: `${result.success ? "bg-green-500 border-green-700" : "bg-red-500 border-red-700"} text-white border`,
+      });
+    } catch (error) {
+      toast({
+        title: error.message,
+        description: "",
+        className: "bg-red-500 text-white border border-red-700",
+      });
+    }
   };
 
   return (
-    <div className="relative bg-purple-100 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden w-80">
+    <div className="relative bg-purple-100 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden w-80 transform hover:scale-105">
       {/* Blog Image */}
-      <img
-        src={blog.image}
-        alt={blog.title}
-        className="h-40 w-full object-cover"
-      />
+      <div className="overflow-hidden">
+        <img
+          src={blog.imageUrl}
+          alt={blog.title}
+          className="h-40 w-full object-cover"
+        />
+      </div>
       {/* Blog Content */}
       <div className="p-5">
         <h2 className="text-2xl font-bold text-purple-600 mb-2">
@@ -86,12 +128,44 @@ const BlogCard = ({ blog }) => {
           </button>
           <button
             className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-            onClick={() => setShowPopup(false)}
+            onClick={() => triggerDelete(blog)}
           >
             Delete
           </button>
         </div>
       )}
+
+      {/* AlertDialog for delete confirmation */}
+      <AlertDialog
+        open={open}
+        onOpenChange={setOpen}
+        className="bg-purple-100 rounded-lg shadow-lg"
+      >
+        <AlertDialogContent className="bg-white rounded-lg p-6">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-purple-700 text-2xl font-bold">
+              Are you absolutely sure?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600">
+              Do you really want to delete the blog.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              onClick={() => setOpen(false)}
+              className=" hover:bg-purple-50"
+            >
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={deleteHandler}
+              className="bg-purple-500 hover:bg-purple-700"
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

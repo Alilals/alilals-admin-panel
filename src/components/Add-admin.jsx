@@ -32,13 +32,15 @@ const AddAdmin = () => {
       return;
     }
     try {
-      await addData({ name, email }, "admins");
+      const result = await addData({ name, email }, "admins");
       setOpen(false);
       toast({
-        title: "Admin added!",
+        title: result.message,
         description: "",
-        className: "bg-green-500 text-white border border-green-700",
+        className: `${result.success ? "bg-green-500 border-green-700" : "bg-red-500 border-red-700"} text-white border`,
       });
+      setEmail("");
+      setName("");
     } catch (error) {
       toast({
         title: "Failed to create admin!",

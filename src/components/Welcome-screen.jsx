@@ -2,30 +2,30 @@ import Link from "next/link";
 
 const WelcomeScreen = () => {
   return (
-    <div className="flex flex-col md:flex-row h-screen max-h-[94vh]">
+    <div className="flex flex-col md:flex-row h-screen">
       {/* Main Content */}
-      <div className="flex-grow p-6 flex flex-col justify-center items-center bg-gray-50">
+      <div className="flex-grow p-6 flex flex-col justify-center items-center bg-gradient-to-br from-purple-700 via-purple-500 to-purple-300 animate-gradient-x">
         {/* Welcome Text */}
-        <h1 className="text-4xl font-bold text-purple-600 mb-4 text-center">
+        <h1 className="text-5xl font-extrabold text-white mb-4 text-center drop-shadow-lg animate-bounce">
           Welcome to the Alilals Admin Panel
         </h1>
-        <p className="text-lg text-gray-700 mb-6 text-center">
-          Manage your agricultural operations, settings, blog posts, and more,
-          right from here!
+        <p className="text-lg text-gray-100 mb-6 text-center max-w-xl drop-shadow-md animate-fade-in">
+          Manage your agricultural services, products, settings, blog posts, and
+          more, right from here!
         </p>
 
         {/* CTA Button */}
         <Link href="https://google.com" target="_blank">
-          <div className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-500 transition-colors">
+          <div className="bg-white text-purple-700 px-8 py-4 rounded-full font-semibold hover:bg-purple-600 hover:text-white transition-transform transform hover:scale-105 shadow-lg">
             Visit Main Website
           </div>
         </Link>
       </div>
 
-      {/* Illustration */}
+      {/* Illustration (Optional) */}
       {/* <div className="hidden md:block w-1/2 h-full bg-gray-100">
         <img
-          src="https://source.unsplash.com/featured/?farm,agriculture" // Replace with your chosen image or illustration
+          src="https://source.unsplash.com/featured/?farm,agriculture"
           alt="Agriculture Illustration"
           className="object-cover w-full h-full"
         />

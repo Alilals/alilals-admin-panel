@@ -1,8 +1,7 @@
 "use client";
 
-import { LayoutDashboard, Settings, LogOut, Newspaper, X } from "lucide-react";
+import { LayoutDashboard, Settings, LogOut, Newspaper } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -12,12 +11,6 @@ const Sidebar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { toast } = useToast();
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
 
   const logoutHandler = async () => {
     await logout();
@@ -32,63 +25,51 @@ const Sidebar = () => {
   return (
     <div className={`flex ${!currentUser ? "hidden" : ""}`}>
       {/* Sidebar */}
-      <div
-        className={`bg-gray-100 text-gray-800 w-64 min-h-screen flex flex-col justify-between transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
-      >
-        {/* Close button for mobile */}
-        <button
-          className="absolute top-4 right-4 md:hidden"
-          onClick={toggleMenu}
-        >
-          <X className="w-6 h-6 text-gray-800" />
-        </button>
-
+      <div className="bg-gray-100 text-gray-800 w-64 min-h-screen flex flex-col justify-between shadow-lg">
         <div className="p-6">
           {/* Logo */}
           <Link href="/">
-            <h1 className="text-2xl font-bold text-purple-600 mb-6">
+            <h1 className="text-3xl font-extrabold text-purple-700 mb-8 transition-colors hover:text-purple-500">
               Alilals Admin
             </h1>
           </Link>
 
           {/* Menu Items */}
-          <ul>
-            <li className="mb-4">
+          <ul className="space-y-4">
+            <li>
               <Link
                 href="/admin/dashboard"
-                className={`flex items-center p-2 text-gray-800 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition-colors ${pathname == "/dashboard" ? "text-purple-600 bg-purple-100 " : ""}`}
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-purple-100 hover:text-purple-700 ${pathname === "/admin/dashboard" ? "bg-purple-100 text-purple-700 shadow-md" : ""}`}
               >
                 <LayoutDashboard className="w-5 h-5 mr-3" />
                 Dashboard
               </Link>
             </li>
 
-            <li className="mb-4">
+            <li>
               <Link
                 href="/admin/blogs"
-                className={`flex items-center p-2 text-gray-800 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition-colors ${pathname == "/blogs" ? "text-purple-600 bg-purple-100 " : ""}`}
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-purple-100 hover:text-purple-700 ${pathname === "/admin/blogs" ? "bg-purple-100 text-purple-700 shadow-md" : ""}`}
               >
                 <Newspaper className="w-5 h-5 mr-3" />
                 Blogs
               </Link>
             </li>
 
-            <li className="mb-4">
+            <li>
               <Link
                 href="/admin/admins"
-                className={`flex items-center p-2 text-gray-800 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition-colors ${pathname == "/admins" ? "text-purple-600 bg-purple-100 " : ""}`}
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-purple-100 hover:text-purple-700 ${pathname === "/admin/admins" ? "bg-purple-100 text-purple-700 shadow-md" : ""}`}
               >
                 <Settings className="w-5 h-5 mr-3" />
                 Admins
               </Link>
             </li>
 
-            <li className="mb-4">
+            <li>
               <div
                 onClick={logoutHandler}
-                className="flex items-center p-2 text-gray-800 hover:bg-purple-100 hover:text-purple-600 rounded-lg transition-colors"
+                className="flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-purple-100 hover:text-purple-700 cursor-pointer"
               >
                 <LogOut className="w-5 h-5 mr-3" />
                 Logout
@@ -98,25 +79,18 @@ const Sidebar = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-purple-100 text-purple-800 text-center">
+        <div className="p-4 bg-purple-200 text-purple-800 text-center">
           &copy; 2024 Alilas
           <br />
           Made by{" "}
-          <a href="https://harudstudios.framer.website" className="underline">
+          <a
+            href="https://harudstudios.framer.website"
+            className="underline hover:text-purple-500"
+          >
             Harud Studios
           </a>
         </div>
       </div>
-
-      {/* Hamburger Icon for Mobile */}
-      {!isOpen && (
-        <button
-          className="md:hidden p-4 bg-gray-100 text-gray-800 fixed top-4 left-4 z-50"
-          onClick={toggleMenu}
-        >
-          <LayoutDashboard className="w-6 h-6" />
-        </button>
-      )}
     </div>
   );
 };
