@@ -16,8 +16,6 @@ const page = () => {
   const handleGoogleLogin = async () => {
     try {
       await loginWithGoogle();
-      console.log(adminsData);
-      console.log(currentUser);
       toast({
         title: "Logging in,,,",
         description: "",
