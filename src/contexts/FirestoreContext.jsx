@@ -48,7 +48,7 @@ export const FirestoreProvider = ({ children }) => {
     };
 
     fetchData();
-  }, []);
+  }, [db]);
 
   const addData = async (newData, collec) => {
     if (collec === "admins") {
