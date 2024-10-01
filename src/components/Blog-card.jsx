@@ -15,6 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import Image from "next/img";
 
 const BlogCard = ({ blog }) => {
   const { deleteData } = useFirestore();
@@ -86,7 +87,7 @@ const BlogCard = ({ blog }) => {
     <div className="relative bg-green-100 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden w-80 transform hover:scale-105 flex flex-col">
       {/* Blog Image */}
       <div className="overflow-hidden">
-        <img
+        <Image
           src={blog.imageUrl}
           alt={blog.title}
           className="h-40 w-full object-cover"

@@ -169,7 +169,7 @@ const BlogForm = () => {
         setImagePreview(blog.imageUrl);
       }
     }
-  }, [blogId, blogsData]);
+  }, [blogId, blogsData, router, toast]);
 
   return (
     <div className="max-w-7xl mx-auto p-8 mt-10">

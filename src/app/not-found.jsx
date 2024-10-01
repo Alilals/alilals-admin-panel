@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const NotFound = () => {
   const router = useRouter();
@@ -18,7 +19,7 @@ const NotFound = () => {
       </div>
 
       <div className="mt-10 animate-bounce">
-        <img
+        <Image
           src="https://media.giphy.com/media/l378zKVk7Eh3yHoJi/giphy.gif"
           alt="Dancing 404"
           className="w-40 h-40 rounded-full"
