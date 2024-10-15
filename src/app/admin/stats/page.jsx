@@ -10,6 +10,7 @@ const Page = () => {
   const { toast } = useToast();
 
   const [editableStats, setEditableStats] = useState({});
+  const [isEditing, setIsEditing] = useState(false); // Manage edit mode
 
   // Handle input change
   const handleInputChange = (statId, value) => {
@@ -39,6 +40,7 @@ const Page = () => {
           });
         }
       }
+      setIsEditing(false); // Exit edit mode after saving
     } catch (error) {
       toast({
         title: "Failed to update the stats!",
@@ -46,6 +48,12 @@ const Page = () => {
         className: "bg-red-500 text-white border border-red-700",
       });
     }
+  };
+
+  // Handle cancel
+  const handleCancel = () => {
+    setEditableStats({}); // Reset editable stats
+    setIsEditing(false); // Exit edit mode
   };
 
   if (loading) {
@@ -68,23 +76,41 @@ const Page = () => {
             <input
               type="text"
               value={
-                editableStats[stat.id] !== undefined
+                isEditing && editableStats[stat.id] !== undefined
                   ? editableStats[stat.id]
                   : stat.value
               }
               onChange={(e) => handleInputChange(stat.id, e.target.value)}
               className="w-full mt-4 p-2 border border-green-300 rounded-md focus:outline-none focus:ring focus:ring-green-200"
+              disabled={!isEditing}
             />
           </div>
         ))}
       </div>
       <div className="my-8 mx-6">
-        <button
-          onClick={saveStats}
-          className="bg-green-600 text-white px-6 py-3 rounded-md shadow hover:bg-green-700"
-        >
-          Save Stats
-        </button>
+        {!isEditing ? (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="bg-yellow-600 text-white px-6 py-3 rounded-md shadow hover:bg-yellow-700"
+          >
+            Edit
+          </button>
+        ) : (
+          <>
+            <button
+              onClick={saveStats}
+              className="bg-green-600 text-white px-6 py-3 rounded-md shadow hover:bg-green-700 mr-4"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleCancel}
+              className="bg-red-600 text-white px-6 py-3 rounded-md shadow hover:bg-red-700"
+            >
+              Cancel
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
