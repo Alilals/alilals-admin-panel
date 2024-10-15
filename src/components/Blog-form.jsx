@@ -22,11 +22,10 @@ const BlogForm = () => {
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [content, setContent] = useState();
+  const [imageError, setImageError] = useState("");
 
-  //generate unique id for image
-  const generateUniqueId = () => {
-    return uuidv4();
-  };
+  // Generate unique id for image
+  const generateUniqueId = () => uuidv4();
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -35,14 +34,13 @@ const BlogForm = () => {
     // Check word count for the brief field
     if (name === "brief") {
       const wordCount = value.trim().split(/\s+/).length;
-
       if (wordCount > 50) {
         toast({
           title: "Word limit exceeded!",
           description: "Brief cannot exceed 50 words.",
           className: "bg-red-500 text-white border border-red-700",
         });
-        return; // Prevent further updates if the word count exceeds 50
+        return;
       }
     }
 
@@ -52,20 +50,30 @@ const BlogForm = () => {
     });
   };
 
-  // Handle image selection
+  // Handle image selection with size check
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setFormData({
-      ...formData,
-      image: file,
-    });
+    setImageError("");
 
-    // Preview the image
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result);
-    };
     if (file) {
+      if (file.size > 1024 * 1024) {
+        setImageError("Image size exceeds 1MB. Please upload a smaller file.");
+        setImagePreview(null);
+        setFormData({
+          ...formData,
+          image: null,
+        });
+        return;
+      }
+
+      setFormData({
+        ...formData,
+        image: file,
+      });
+
+      // Preview the image
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
     } else {
       setImagePreview(null);
@@ -83,67 +91,30 @@ const BlogForm = () => {
       });
       return;
     }
-    if (blogId) {
-      try {
-        if (formData.image) {
-          const imageId = generateUniqueId();
-          const result = await updateData(
-            blogId,
-            { ...formData, content, imageId },
-            "blogs"
-          );
-          toast({
-            title: result.message,
-            description: "",
-            className: `${result.success ? "bg-green-500 border-green-700" : "bg-red-500 border-red-700"} text-white border`,
-          });
-          if (result.success) {
-            router.push("/admin/blogs");
-          }
-        } else {
-          const result = await updateData(
-            blogId,
-            { ...formData, content },
-            "blogs"
-          );
-          toast({
-            title: result.message,
-            description: "",
-            className: `${result.success ? "bg-green-500 border-green-700" : "bg-red-500 border-red-700"} text-white border`,
-          });
-          if (result.success) {
-            router.push("/admin/blogs");
-          }
-        }
-      } catch (error) {
-        toast({
-          title: "Failed to update the blog!",
-          description: error.message,
-          className: "bg-red-500 text-white border border-red-700",
-        });
+
+    try {
+      const imageId = formData.image ? generateUniqueId() : null;
+      const data = { ...formData, content, imageId };
+
+      const result = blogId
+        ? await updateData(blogId, data, "blogs")
+        : await addData(data, "blogs");
+
+      toast({
+        title: result.message,
+        description: "",
+        className: `${result.success ? "bg-green-500 border-green-700" : "bg-red-500 border-red-700"} text-white border`,
+      });
+
+      if (result.success) {
+        router.push("/admin/blogs");
       }
-    } else {
-      try {
-        const imageId = generateUniqueId();
-        const result = await addData(
-          { ...formData, content, imageId },
-          "blogs"
-        );
-        toast({
-          title: result.message,
-          description: "",
-          className: `${result.success ? "bg-green-500 border-green-700" : "bg-red-500 border-red-700"} text-white border`,
-        });
-        if (result.success) {
-          router.push("/admin/blogs");
-        }
-      } catch (error) {
-        toast({
-          title: "Failed to create blog!",
-          description: error.message,
-          className: "bg-red-500 text-white border border-red-700",
-        });
-      }
+    } catch (error) {
+      toast({
+        title: blogId ? "Failed to update the blog!" : "Failed to create blog!",
+        description: error.message,
+        className: "bg-red-500 text-white border border-red-700",
+      });
     }
   };
 
@@ -229,7 +200,7 @@ const BlogForm = () => {
                 className="block text-green-600 font-bold mb-2"
                 htmlFor="image"
               >
-                Upload Image
+                Upload Image (Max size: 1MB)
               </label>
               <input
                 type="file"
@@ -239,6 +210,12 @@ const BlogForm = () => {
                 onChange={handleImageChange}
                 className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-100 file:text-green-600 hover:file:bg-green-200"
               />
+              {imageError && (
+                <p className="text-red-500 text-sm mt-2">{imageError}</p>
+              )}
+              <p className="text-sm text-gray-500 mt-2">
+                Maximum image size: 1MB.
+              </p>
             </div>
 
             {/* Image Preview */}

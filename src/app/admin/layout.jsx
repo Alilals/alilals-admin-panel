@@ -20,22 +20,21 @@ const AdminLayout = ({ children }) => {
         className: "bg-red-500 text-white border border-red-700",
       });
       router.push("/login");
-    }
-    if (currentUser && adminsData) {
-      const isEmailPresent = adminsData.some(
+    } else {
+      const isAdmin = adminsData.some(
         (admin) => admin.email === currentUser.email
       );
-      if (!isEmailPresent) {
+      if (!isAdmin && adminsData.length) {
         logout();
+        router.push("/login");
         toast({
-          title: "Unauthorized email",
-          description: "",
+          title: "Access Denied",
+          description: "You have been removed from the admins list.",
           className: "bg-red-500 text-white border border-red-700",
         });
-        router.push("/login");
       }
     }
-  }, [currentUser, router, adminsData]);
+  }, [currentUser, adminsData, logout, router, toast]);
 
   if (!currentUser) {
     return <div>Loading...</div>;

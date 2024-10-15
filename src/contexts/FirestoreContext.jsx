@@ -24,6 +24,7 @@ const FirestoreContext = createContext();
 
 export const FirestoreProvider = ({ children }) => {
   const [adminsData, setAdminsData] = useState([]);
+  const [statsData, setStatsData] = useState([]);
   const [blogsData, setBlogsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,6 +45,12 @@ export const FirestoreProvider = ({ children }) => {
         ...doc.data(),
       }));
       setBlogsData(fetchedBlogs);
+      const statQuerySnapshot = await getDocs(collection(db, "stats"));
+      const fetchedStats = statQuerySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setStatsData(fetchedStats);
       setLoading(false);
     };
 
@@ -222,6 +229,24 @@ export const FirestoreProvider = ({ children }) => {
         return { success: false, message: error.message };
       }
     }
+
+    if (collec === "stats") {
+      try {
+        setLoading(true);
+        const docRef = doc(db, "stats", id);
+        await updateDoc(docRef, newData);
+        setStatsData((prevData) =>
+          prevData.map((item) =>
+            item.id === id ? { ...item, ...newData } : item
+          )
+        );
+        setLoading(false);
+        return { success: true, message: "Stat updated successfully!" };
+      } catch (error) {
+        setLoading(false);
+        return { success: false, message: error.message };
+      }
+    }
   };
 
   return (
@@ -229,6 +254,7 @@ export const FirestoreProvider = ({ children }) => {
       value={{
         adminsData,
         blogsData,
+        statsData,
         loading,
         addData,
         deleteData,
