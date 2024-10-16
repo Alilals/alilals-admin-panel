@@ -5,13 +5,13 @@ import React from "react";
 import * as LucideIcons from "lucide-react";
 
 const DashboardCards = () => {
-  const { adminsData, blogsData } = useFirestore();
+  const { adminsData, blogsData, statsData, projectsData } = useFirestore();
 
   const cards = [
     {
-      title: "Admins",
-      count: adminsData.length,
-      icon: "Crown",
+      title: "Stats",
+      count: statsData.length,
+      icon: "ChartArea",
     },
     {
       title: "Blogs",
@@ -19,14 +19,14 @@ const DashboardCards = () => {
       icon: "Newspaper",
     },
     {
-      title: "Products",
-      count: 0,
-      icon: "ShoppingBag",
+      title: "Projects",
+      count: projectsData.length,
+      icon: "FolderRoot",
     },
     {
-      title: "Services",
-      count: 0,
-      icon: "Wrench",
+      title: "Admins",
+      count: adminsData.length,
+      icon: "Crown",
     },
   ];
 

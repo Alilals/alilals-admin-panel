@@ -1,12 +1,12 @@
-import BlogForm from "@/components/Blog-form";
 import PageHeader from "@/components/Page-header";
+import ProjectForm from "@/components/ProjectForm";
 import React from "react";
 
 const AddBlog = () => {
   return (
     <div>
-      <PageHeader title="Create Blog" />
-      <BlogForm />
+      <PageHeader title="Create Project" />
+      <ProjectForm />
     </div>
   );
 };

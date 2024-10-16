@@ -2,7 +2,7 @@ import React from "react";
 import PageHeader from "@/components/Page-header";
 import DashboardCards from "@/components/Dashboard-cards";
 
-const Page = () => {
+const Dashboard = () => {
   return (
     <div>
       <PageHeader title="Dashboard" />
@@ -16,4 +16,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default Dashboard;

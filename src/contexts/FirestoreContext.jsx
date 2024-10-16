@@ -26,6 +26,7 @@ export const FirestoreProvider = ({ children }) => {
   const [adminsData, setAdminsData] = useState([]);
   const [statsData, setStatsData] = useState([]);
   const [blogsData, setBlogsData] = useState([]);
+  const [projectsData, setProjectsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const db = getFirestore(app);
@@ -51,6 +52,12 @@ export const FirestoreProvider = ({ children }) => {
         ...doc.data(),
       }));
       setStatsData(fetchedStats);
+      const projectQuerySnapshot = await getDocs(collection(db, "projects"));
+      const fetchedProjects = projectQuerySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setProjectsData(fetchedProjects);
       setLoading(false);
     };
 
@@ -123,6 +130,41 @@ export const FirestoreProvider = ({ children }) => {
         return { success: false, message: error.message };
       }
     }
+    if (collec === "projects") {
+      setLoading(true);
+      try {
+        // Upload the image to Firebase Storage
+        const imageRef = ref(storage, `projects/${newData.imageId}`);
+        await uploadBytes(imageRef, newData.image);
+
+        // Get the image URL
+        const imageUrl = await getDownloadURL(imageRef);
+
+        // Add project data to Firestore
+        const projectData = {
+          title: newData.title,
+          brief: newData.brief,
+          imageId: newData.imageId,
+          imageUrl,
+          name: newData.name,
+          address: newData.address,
+          cost: newData.cost,
+          size: newData.size,
+          appleType: newData.appleType,
+        };
+
+        const docRef = await addDoc(collection(db, "projects"), projectData);
+        setProjectsData((prevData) => [
+          ...prevData,
+          { id: docRef.id, ...projectData },
+        ]);
+        setLoading(false);
+        return { success: true, message: "Project added successfully!" };
+      } catch (error) {
+        setLoading(false);
+        return { success: false, message: error.message };
+      }
+    }
   };
 
   const deleteData = async (id, collec) => {
@@ -146,6 +188,30 @@ export const FirestoreProvider = ({ children }) => {
           // Update local state
           setBlogsData((prevData) => prevData.filter((item) => item.id !== id));
           return { success: true, message: "Blog deleted successfully!" };
+        }
+      } catch (error) {
+        return { success: false, message: error.message };
+      }
+    }
+    if (collec === "projects") {
+      try {
+        // Find the project to delete to get its image URL
+        const projectToDelete = projectsData.find(
+          (project) => project.id === id
+        );
+        if (projectToDelete) {
+          // Delete the project document from Firestore
+          await deleteDoc(doc(db, "projects", id));
+
+          // Delete the image from Firebase Storage
+          const imageRef = ref(storage, `projects/${projectToDelete.imageId}`);
+          await deleteObject(imageRef);
+
+          // Update local state
+          setProjectsData((prevData) =>
+            prevData.filter((item) => item.id !== id)
+          );
+          return { success: true, message: "Project deleted successfully!" };
         }
       } catch (error) {
         return { success: false, message: error.message };
@@ -247,6 +313,64 @@ export const FirestoreProvider = ({ children }) => {
         return { success: false, message: error.message };
       }
     }
+
+    if (collec === "projects") {
+      try {
+        setLoading(true);
+
+        // Find the project to update
+        const projectToUpdate = projectsData.find(
+          (project) => project.id === id
+        );
+        if (projectToUpdate) {
+          let imageUrl = projectToUpdate.imageUrl;
+
+          // If a new image is provided, delete the old image and upload the new one
+          if (newData.image) {
+            // Delete old image from Firebase Storage
+            const oldImageRef = ref(
+              storage,
+              `projects/${projectToUpdate.imageId}`
+            );
+            await deleteObject(oldImageRef);
+
+            // Upload new image to Firebase Storage
+            const newImageRef = ref(storage, `projects/${newData.imageId}`);
+            await uploadBytes(newImageRef, newData.image);
+            imageUrl = await getDownloadURL(newImageRef);
+          }
+
+          // Update blog data in Firestore
+          const updatedProjectData = {
+            title: newData.title || projectToUpdate.title,
+            brief: newData.brief || projectToUpdate.brief,
+            imageId: newData.imageId || projectToUpdate.imageId,
+            imageUrl,
+            name: newData.name || projectToUpdate.name,
+            address: newData.address || projectToUpdate.address,
+            cost: newData.cost || projectToUpdate.cost,
+            size: newData.size || projectToUpdate.size,
+            appleType: newData.appleType || projectToUpdate.appleType,
+          };
+
+          const docRef = doc(db, "projects", id);
+          await updateDoc(docRef, updatedProjectData);
+
+          // Update local state
+          setProjectsData((prevData) =>
+            prevData.map((item) =>
+              item.id === id ? { id, ...updatedProjectData } : item
+            )
+          );
+
+          setLoading(false);
+          return { success: true, message: "Project updated successfully!" };
+        }
+      } catch (error) {
+        setLoading(false);
+        return { success: false, message: error.message };
+      }
+    }
   };
 
   return (
@@ -255,6 +379,7 @@ export const FirestoreProvider = ({ children }) => {
         adminsData,
         blogsData,
         statsData,
+        projectsData,
         loading,
         addData,
         deleteData,

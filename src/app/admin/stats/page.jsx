@@ -5,7 +5,7 @@ import PageHeader from "@/components/Page-header";
 import { useFirestore } from "@/contexts/FirestoreContext";
 import { useToast } from "@/hooks/use-toast";
 
-const Page = () => {
+const Stats = () => {
   const { statsData, loading, updateData } = useFirestore();
   const { toast } = useToast();
 
@@ -98,16 +98,16 @@ const Page = () => {
         ) : (
           <>
             <button
-              onClick={saveStats}
-              className="bg-green-600 text-white px-6 py-3 rounded-md shadow hover:bg-green-700 mr-4"
-            >
-              Save
-            </button>
-            <button
               onClick={handleCancel}
-              className="bg-red-600 text-white px-6 py-3 rounded-md shadow hover:bg-red-700"
+              className="bg-red-600 text-white px-6 py-3 rounded-md shadow hover:bg-red-700 mr-4"
             >
               Cancel
+            </button>
+            <button
+              onClick={saveStats}
+              className="bg-green-600 text-white px-6 py-3 rounded-md shadow hover:bg-green-700"
+            >
+              Save
             </button>
           </>
         )}
@@ -116,4 +116,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default Stats;
