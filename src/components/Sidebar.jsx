@@ -2,11 +2,13 @@
 
 import {
   LayoutDashboard,
+  TriangleAlert,
   Crown,
   LogOut,
   Newspaper,
   ChartArea,
   FolderRoot,
+  BookA,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -50,6 +52,26 @@ const Sidebar = () => {
               >
                 <LayoutDashboard className="w-5 h-5 mr-3" />
                 Dashboard
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/admin/alert"
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/alert" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
+              >
+                <TriangleAlert className="w-5 h-5 mr-3" />
+                Alert
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/admin/bookings"
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/bookings" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
+              >
+                <BookA className="w-5 h-5 mr-3" />
+                Bookings
               </Link>
             </li>
 

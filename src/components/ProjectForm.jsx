@@ -30,7 +30,8 @@ const ProjectForm = () => {
     image: null,
     name: "",
     address: "",
-    cost: "",
+    start: "",
+    end: "",
     size: "",
     appleType: "",
   });
@@ -103,7 +104,8 @@ const ProjectForm = () => {
       !imagePreview ||
       !formData.name ||
       !formData.address ||
-      !formData.cost ||
+      !formData.start ||
+      !formData.end ||
       !formData.size ||
       !formData.appleType
     ) {
@@ -117,7 +119,11 @@ const ProjectForm = () => {
 
     try {
       const imageId = formData.image ? generateUniqueId() : null;
-      const data = { ...formData, imageId };
+      const [startYear, startMonth, startDay] = formData.start.split("-");
+      const newStart = `${startDay}-${startMonth}-${startYear}`;
+      const [endYear, endMonth, endDay] = formData.end.split("-");
+      const newEnd = `${endDay}-${endMonth}-${endYear}`;
+      const data = { ...formData, imageId, start: newStart, end: newEnd };
 
       const result = projectId
         ? await updateData(projectId, data, "projects")
@@ -177,12 +183,17 @@ const ProjectForm = () => {
       }
 
       if (project) {
+        const [startDay, startMonth, startYear] = project.start.split("-");
+        const newStart = `${startYear}-${startMonth}-${startDay}`;
+        const [endDay, endMonth, endYear] = project.end.split("-");
+        const newEnd = `${endYear}-${endMonth}-${endDay}`;
         setFormData({
           title: project.title,
           brief: project.brief,
           name: project.name,
           address: project.address,
-          cost: project.cost,
+          start: newStart,
+          end: newEnd,
           size: project.size,
           appleType: project.appleType,
         });
@@ -319,24 +330,46 @@ const ProjectForm = () => {
               />
             </div>
 
-            {/* Project Cost Field */}
-            <div>
-              <label
-                className="block text-green-600 font-bold mb-2"
-                htmlFor="cost"
-              >
-                Project Cost
-              </label>
-              <input
-                type="number"
-                name="cost"
-                id="cost"
-                value={formData.cost}
-                onChange={handleChange}
-                className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                placeholder="Enter project cost"
-                required
-              />
+            <div className="flex gap-20">
+              {/* Project start */}
+              <div>
+                <label
+                  className="block text-green-600 font-bold mb-2"
+                  htmlFor="start"
+                >
+                  Project Start Date
+                </label>
+                <input
+                  type="date"
+                  name="start"
+                  id="start"
+                  value={formData.start}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Enter project start date"
+                  required
+                />
+              </div>
+
+              {/* Project end */}
+              <div>
+                <label
+                  className="block text-green-600 font-bold mb-2"
+                  htmlFor="end"
+                >
+                  Project End Date
+                </label>
+                <input
+                  type="date"
+                  name="end"
+                  id="end"
+                  value={formData.end}
+                  onChange={handleChange}
+                  className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Enter project end date"
+                  required
+                />
+              </div>
             </div>
 
             {/* Project Size Field */}
