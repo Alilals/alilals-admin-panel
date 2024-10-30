@@ -31,7 +31,7 @@ const AlertForm = () => {
     // Check word count for the brief field
     if (name === "brief") {
       const wordCount = value.trim().split(/\s+/).length;
-      if (wordCount > 50) {
+      if (wordCount > 100) {
         toast({
           title: "Word limit exceeded!",
           description: "Brief cannot exceed 50 words.",
@@ -161,7 +161,7 @@ const AlertForm = () => {
                 className="block text-green-600 font-bold mb-2"
                 htmlFor="brief"
               >
-                Brief (Max 50 words)
+                Brief (Max 100 words)
               </label>
               <textarea
                 name="brief"
@@ -174,7 +174,7 @@ const AlertForm = () => {
                 required
               />
               <p className="text-sm text-gray-500">
-                {formData.brief.trim().split(/\s+/).length} / 50 words
+                {formData.brief.trim().split(/\s+/).length} / 100 words
               </p>
             </div>
 
