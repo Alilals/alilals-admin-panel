@@ -113,7 +113,7 @@ const AlertForm = () => {
   };
 
   useEffect(() => {
-    if (alertData.length) {
+    if (alertData.length && !formData.title) {
       const [day, month, year] = alertData[0].date.split("-");
       const newDate = `${year}-${month}-${day}`;
       setFormData({
