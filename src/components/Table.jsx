@@ -141,7 +141,7 @@ const Table = ({ headers = [], collectionName = "" }) => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.setAttribute("href", url);
-      link.setAttribute("download", `${collectionName}-.csv`);
+      link.setAttribute("download", `${collectionName}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -165,7 +165,7 @@ const Table = ({ headers = [], collectionName = "" }) => {
     ...headers,
     { key: "Date", value: "createdAt" },
     { key: "Checked", value: "checked" },
-    { key: "Actions", value: "actions" }, // Actions column for the delete button
+    { key: "Actions", value: "actions" },
   ];
 
   useEffect(() => {
@@ -176,9 +176,7 @@ const Table = ({ headers = [], collectionName = "" }) => {
       }
     };
     const fetchTotal = async () => {
-      if (!totalBookings) {
-        await fetchTotalBookings("OrchardBooking");
-      }
+      await fetchTotalBookings(collectionName);
     };
     fetchTotal();
     initialFetch();
