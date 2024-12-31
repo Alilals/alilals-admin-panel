@@ -29,7 +29,7 @@ const Table = ({ headers = [], collectionName = "" }) => {
     totalBookings,
   } = useBookings();
 
-  const itemsPerPage = 2; // Per page bookings
+  const itemsPerPage = 10; // Per page bookings
   const [currentPage, setCurrentPage] = useState(1);
   const [hasNextPageData, setHasNextPageData] = useState(false);
   const [open, setOpen] = useState(false);
