@@ -209,7 +209,7 @@ const AlertForm = () => {
                 <img
                   src={imagePreview}
                   alt="Selected Preview"
-                  className="w-full h-72 object-cover rounded-lg shadow-md"
+                  className="w-72 h-72 object-cover rounded-lg shadow-md"
                 />
               </div>
             )}

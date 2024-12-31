@@ -129,7 +129,7 @@ const Sidebar = () => {
 
         {/* Footer */}
         <div className="p-4 bg-green-200 text-green-800 text-center">
-          &copy; 2024 Alilas
+          &copy; 2025 Alilals
           <br />
           Made by{" "}
           <a

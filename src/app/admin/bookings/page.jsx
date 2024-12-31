@@ -1,13 +1,14 @@
 import PageHeader from "@/components/Page-header";
+import Link from "next/link";
 import React from "react";
 
 const records = [
-  { name: "Contact Details Records", link: "" },
-  { name: "Orchard Booking Records", link: "" },
-  { name: "Trellis Booking Records", link: "" },
-  { name: "Drip Irrigation Booking Records", link: "" },
-  { name: "Soil Test Booking Records", link: "" },
-  { name: "Expert Call Booking Records", link: "" },
+  { name: "Query Records", link: "bookings/query-bookings" },
+  { name: "Orchard Booking Records", link: "bookings/orchard-bookings" },
+  { name: "Trellis Booking Records", link: "bookings/trellis-bookings" },
+  { name: "Drip Irrigation Booking Records", link: "bookings/drip-bookings" },
+  { name: "Soil Test Booking Records", link: "bookings/soiltest-bookings" },
+  { name: "Expert Call Booking Records", link: "bookings/expert-bookings" },
 ];
 
 const BookingPage = () => {
@@ -29,14 +30,12 @@ const BookingPage = () => {
             >
               <td className="px-6 py-4">{record.name}</td>
               <td className="px-6 py-4">
-                <a
+                <Link
                   href={record.link}
                   className="text-green-600 hover:text-green-700 font-medium underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
                   View Record
-                </a>
+                </Link>
               </td>
             </tr>
           ))}

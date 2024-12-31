@@ -7,6 +7,7 @@ import {
   collection,
   getDocs,
   addDoc,
+  setDoc,
   deleteDoc,
   doc,
   getFirestore,
@@ -85,10 +86,10 @@ export const FirestoreProvider = ({ children }) => {
             message: "Cannot add! Email already exists",
           };
         }
-        const docRef = await addDoc(collection(db, collec), newData);
+        await setDoc(doc(db, collec, newData.email), newData);
         setAdminsData((prevData) => [
           ...prevData,
-          { id: docRef.id, ...newData },
+          { id: newData.email, ...newData },
         ]);
         setLoading(false);
         return { success: true, message: "Admin added successfully!" };
