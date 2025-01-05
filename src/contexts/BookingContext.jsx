@@ -174,7 +174,8 @@ export const BookingProvider = ({ children }) => {
       setError(null);
       const bookingsRef = collection(firestore, collectionName);
       console.log("Fetching all records...");
-      const snapshot = await getDocs(bookingsRef);
+      const bookingsQuery = query(bookingsRef, orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(bookingsQuery);
 
       if (snapshot.empty) {
         return [];
