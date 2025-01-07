@@ -129,11 +129,11 @@ const Sidebar = () => {
 
         {/* Footer */}
         <div className="p-4 bg-green-200 text-green-800 text-center">
-          &copy; 2025 Alilals
+          &copy; 2025 Alilals Agrico
           <br />
           Made by{" "}
           <a
-            href="https://harudstudios.framer.website"
+            href="https://www.instagram.com/harudstudios/"
             className="underline hover:text-green-500"
           >
             Harud Studios
