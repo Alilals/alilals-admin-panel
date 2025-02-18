@@ -28,6 +28,7 @@ export const FirestoreProvider = ({ children }) => {
   const [statsData, setStatsData] = useState([]);
   const [blogsData, setBlogsData] = useState([]);
   const [projectsData, setProjectsData] = useState([]);
+  const [applesData, setApplesData] = useState([]);
   const [alertData, setAlertData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -60,6 +61,12 @@ export const FirestoreProvider = ({ children }) => {
         ...doc.data(),
       }));
       setProjectsData(fetchedProjects);
+      const appleQuerySnapshot = await getDocs(collection(db, "apples"));
+      const fetchedApples = appleQuerySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setApplesData(fetchedApples);
       const alertQuerySnapshot = await getDocs(collection(db, "alert"));
       const fetchedAlert = alertQuerySnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -174,6 +181,58 @@ export const FirestoreProvider = ({ children }) => {
         return { success: false, message: error.message };
       }
     }
+    if (collec === "apples") {
+      setLoading(true);
+      try {
+        // Upload the image to Firebase Storage
+        const imageRef = ref(storage, `apples/${newData.imageId}`);
+        await uploadBytes(imageRef, newData.image);
+
+        // Get the image URL
+        const imageUrl = await getDownloadURL(imageRef);
+
+        // Upload the pdf to Firebase Storage
+        const pdfRef = ref(storage, `apples/${newData.pdfId}`);
+        await uploadBytes(pdfRef, newData.pdfFile);
+
+        // Get the image URL
+        const pdfUrl = await getDownloadURL(pdfRef);
+
+        // Add project data to Firestore
+        const appleData = {
+          title: newData.title,
+          characteristics: newData.characteristics,
+          imageId: newData.imageId,
+          imageUrl,
+          colour: newData.colour,
+          flavour: newData.flavour,
+          shape: newData.shape,
+          skin: newData.skin,
+          fruitFlesh: newData.fruitFlesh,
+          vigour: newData.vigour,
+          blossom: newData.blossom,
+          pollinator: newData.pollinator,
+          growth: newData.growth,
+          maturity: newData.maturity,
+          size: newData.size,
+          companyExp: newData.companyExp,
+          pdfId: newData.pdfId,
+          pdfUrl,
+          pdfName: newData.pdfName,
+        };
+
+        const docRef = await addDoc(collection(db, "apples"), appleData);
+        setApplesData((prevData) => [
+          ...prevData,
+          { id: docRef.id, ...appleData },
+        ]);
+        setLoading(false);
+        return { success: true, message: "Variety added successfully!" };
+      } catch (error) {
+        setLoading(false);
+        return { success: false, message: error.message };
+      }
+    }
     if (collec === "alert") {
       setLoading(true);
       try {
@@ -253,6 +312,32 @@ export const FirestoreProvider = ({ children }) => {
             prevData.filter((item) => item.id !== id)
           );
           return { success: true, message: "Project deleted successfully!" };
+        }
+      } catch (error) {
+        return { success: false, message: error.message };
+      }
+    }
+    if (collec === "apples") {
+      try {
+        // Find the project to delete to get its image URL
+        const appleToDelete = applesData.find((apple) => apple.id === id);
+        if (appleToDelete) {
+          // Delete the project document from Firestore
+          await deleteDoc(doc(db, "apples", id));
+
+          // Delete the image from Firebase Storage
+          const imageRef = ref(storage, `apples/${appleToDelete.imageId}`);
+          await deleteObject(imageRef);
+
+          // Delete the image from Firebase Storage
+          const pdfRef = ref(storage, `apples/${appleToDelete.pdfId}`);
+          await deleteObject(pdfRef);
+
+          // Update local state
+          setApplesData((prevData) =>
+            prevData.filter((item) => item.id !== id)
+          );
+          return { success: true, message: "Variety deleted successfully!" };
         }
       } catch (error) {
         return { success: false, message: error.message };
@@ -414,6 +499,83 @@ export const FirestoreProvider = ({ children }) => {
       }
     }
 
+    if (collec === "apples") {
+      try {
+        setLoading(true);
+
+        // Find the apple to update
+        const appleToUpdate = applesData.find((apple) => apple.id === id);
+        if (appleToUpdate) {
+          let imageUrl = appleToUpdate.imageUrl;
+          let pdfUrl = appleToUpdate.pdfUrl;
+
+          // If a new image is provided, delete the old image and upload the new one
+          if (newData.image) {
+            // Delete old image from Firebase Storage
+            const oldImageRef = ref(storage, `apples/${appleToUpdate.imageId}`);
+            await deleteObject(oldImageRef);
+
+            // Upload new image to Firebase Storage
+            const newImageRef = ref(storage, `apples/${newData.imageId}`);
+            await uploadBytes(newImageRef, newData.image);
+            imageUrl = await getDownloadURL(newImageRef);
+          }
+
+          // If a new pdf is provided, delete the old pdf and upload the new one
+          if (newData.pdfFile) {
+            // Delete old pdf from Firebase Storage
+            const oldPdfRef = ref(storage, `apples/${appleToUpdate.pdfId}`);
+            await deleteObject(oldPdfRef);
+
+            // Upload new pdf to Firebase Storage
+            const newPdfRef = ref(storage, `apples/${newData.pdfId}`);
+            await uploadBytes(newPdfRef, newData.image);
+            pdfUrl = await getDownloadURL(newPdfRef);
+          }
+
+          // Update apple data in Firestore
+          const updatedAppleData = {
+            title: newData.title || appleToUpdate.title,
+            characteristics:
+              newData.characteristics || appleToUpdate.characteristics,
+            imageId: newData.imageId || appleToUpdate.imageId,
+            imageUrl,
+            pdfId: newData.pdfId || appleToUpdate.pdfId,
+            pdfUrl,
+            pdfName: newData.pdfName || appleToUpdate.pdfName,
+            colour: newData.colour || appleToUpdate.colour,
+            flavour: newData.flavour || appleToUpdate.flavour,
+            shape: newData.shape || appleToUpdate.shape,
+            skin: newData.skin || appleToUpdate.skin,
+            fruitFlesh: newData.fruitFlesh || appleToUpdate.fruitFlesh,
+            vigour: newData.vigour || appleToUpdate.vigour,
+            blossom: newData.blossom || appleToUpdate.blossom,
+            pollinator: newData.pollinator || appleToUpdate.pollinator,
+            growth: newData.growth || appleToUpdate.growth,
+            maturity: newData.maturity || appleToUpdate.maturity,
+            size: newData.size || appleToUpdate.size,
+            companyExp: newData.companyExp || appleToUpdate.companyExp,
+          };
+
+          const docRef = doc(db, "apples", id);
+          await updateDoc(docRef, updatedAppleData);
+
+          // Update local state
+          setApplesData((prevData) =>
+            prevData.map((item) =>
+              item.id === id ? { id, ...updatedAppleData } : item
+            )
+          );
+
+          setLoading(false);
+          return { success: true, message: "Variety updated successfully!" };
+        }
+      } catch (error) {
+        setLoading(false);
+        return { success: false, message: error.message };
+      }
+    }
+
     if (collec === "alert") {
       try {
         setLoading(true);
@@ -475,6 +637,7 @@ export const FirestoreProvider = ({ children }) => {
         blogsData,
         statsData,
         projectsData,
+        applesData,
         alertData,
         loading,
         addData,

@@ -9,6 +9,7 @@ import {
   ChartArea,
   FolderRoot,
   BookA,
+  AppleIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -57,6 +58,16 @@ const Sidebar = () => {
 
             <li>
               <Link
+                href="/admin/admins"
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/admins" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
+              >
+                <Crown className="w-5 h-5 mr-3" />
+                Admins
+              </Link>
+            </li>
+
+            <li>
+              <Link
                 href="/admin/alert"
                 className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/alert" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
               >
@@ -67,21 +78,11 @@ const Sidebar = () => {
 
             <li>
               <Link
-                href="/admin/bookings"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/bookings" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
+                href="/admin/apples"
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/apples" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
               >
-                <BookA className="w-5 h-5 mr-3" />
-                Bookings
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/admin/stats"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/stats" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
-              >
-                <ChartArea className="w-5 h-5 mr-3" />
-                Stats
+                <AppleIcon className="w-5 h-5 mr-3" />
+                Apple Varieties
               </Link>
             </li>
 
@@ -97,6 +98,16 @@ const Sidebar = () => {
 
             <li>
               <Link
+                href="/admin/bookings"
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/bookings" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
+              >
+                <BookA className="w-5 h-5 mr-3" />
+                Bookings
+              </Link>
+            </li>
+
+            <li>
+              <Link
                 href="/admin/projects"
                 className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/projects" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
               >
@@ -107,11 +118,11 @@ const Sidebar = () => {
 
             <li>
               <Link
-                href="/admin/admins"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/admins" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
+                href="/admin/stats"
+                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/stats" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
               >
-                <Crown className="w-5 h-5 mr-3" />
-                Admins
+                <ChartArea className="w-5 h-5 mr-3" />
+                Stats
               </Link>
             </li>
 

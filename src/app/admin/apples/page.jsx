@@ -16,27 +16,27 @@ import { useFirestore } from "@/contexts/FirestoreContext";
 import { Search } from "lucide-react";
 import ItemCard from "@/components/ItemCard";
 
-const ProjectsPage = () => {
-  const { projectsData, loading } = useFirestore();
+const ApplesPage = () => {
+  const { applesData, loading } = useFirestore();
 
-  const projectsPerPage = 8;
+  const applesPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Filter projects by search term, real-time as searchTerm changes
-  const filteredProjects = projectsData?.filter((project) =>
-    project.title.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filter apples by search term, real-time as searchTerm changes
+  const filteredApples = applesData?.filter((apple) =>
+    apple.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Calculate total pages based on filtered projects
-  const totalPages = Math.ceil(filteredProjects?.length / projectsPerPage);
+  // Calculate total pages based on filtered apples
+  const totalPages = Math.ceil(filteredApples?.length / applesPerPage);
 
-  // Get projects for the current page
-  const indexOfLastProject = currentPage * projectsPerPage;
-  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-  const currentProjects = filteredProjects?.slice(
-    indexOfFirstProject,
-    indexOfLastProject
+  // Get apples for the current page
+  const indexOfLastApple = currentPage * applesPerPage;
+  const indexOfFirstApple = indexOfLastApple - applesPerPage;
+  const currentApples = filteredApples?.slice(
+    indexOfFirstApple,
+    indexOfLastApple
   );
 
   // Change page handler
@@ -52,7 +52,7 @@ const ProjectsPage = () => {
 
   return (
     <div>
-      <PageHeader title="Projects" />
+      <PageHeader title="Apple Varieties" />
       <div className="my-10 flex justify-center gap-10">
         {/* Search Box */}
         <div className="flex items-center bg-green-100 text-green-700 rounded-lg shadow-md p-3 w-full max-w-md">
@@ -61,17 +61,17 @@ const ProjectsPage = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search your projects..."
+            placeholder="Search varieties..."
             className="bg-transparent flex-grow outline-none text-green-700 placeholder-green-500"
           />
         </div>
-        {/* Add Projects Button */}
-        <Link href="/admin/projects/addproject">
-          <AddButton label="Add Project" />
+        {/* Add Apple Button */}
+        <Link href="/admin/apples/addapple">
+          <AddButton label="Add Variety" />
         </Link>
       </div>
 
-      {/* Projects Cards */}
+      {/* Apple Cards */}
       {loading ? (
         <div className="flex justify-center items-center mt-20">
           {/* Loading Spinner */}
@@ -79,13 +79,13 @@ const ProjectsPage = () => {
         </div>
       ) : (
         <div className="flex mx-6 gap-6 flex-wrap my-10">
-          {currentProjects?.length > 0 ? (
-            currentProjects.map((project) => (
-              <ItemCard key={project.id} item={project} type={"project"} />
+          {currentApples?.length > 0 ? (
+            currentApples.map((apple) => (
+              <ItemCard key={apple.id} item={apple} type={"apple"} />
             ))
           ) : (
             <div className="w-full text-center text-3xl font-bold text-green-200 mt-20">
-              No projects found...
+              No Apple Varieties found...
             </div>
           )}
         </div>
@@ -141,4 +141,4 @@ const ProjectsPage = () => {
   );
 };
 
-export default ProjectsPage;
+export default ApplesPage;

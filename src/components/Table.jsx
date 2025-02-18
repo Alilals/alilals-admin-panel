@@ -329,7 +329,7 @@ const Table = ({ headers = [], collectionName = "" }) => {
             </AlertDialogTitle>
             <AlertDialogDescription className="text-gray-600">
               Do you really want to remove the record with reference No.{" "}
-              <strong>{selectedRecording?.id}</strong>?
+              <strong>{selectedRecording?.referenceNo}</strong>?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
