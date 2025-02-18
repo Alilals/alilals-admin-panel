@@ -139,6 +139,24 @@ const AppleVarietyForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!imagePreview) {
+      toast({
+        title: "Image not Uploaded",
+        description: "",
+        className: "bg-red-500 text-white border border-red-700",
+      });
+      return;
+    }
+
+    if (!pdfName) {
+      toast({
+        title: "Pdf not Uploaded",
+        description: "",
+        className: "bg-red-500 text-white border border-red-700",
+      });
+      return;
+    }
+
     // Validate all required fields
     if (
       !formData.title ||
@@ -350,6 +368,7 @@ const AppleVarietyForm = () => {
                     value={formData.colour}
                     onChange={handleChange}
                     className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    required
                   />
                 </div>
                 <div>
@@ -366,6 +385,7 @@ const AppleVarietyForm = () => {
                     value={formData.flavour}
                     onChange={handleChange}
                     className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    required
                   />
                 </div>
                 <div>
@@ -382,6 +402,7 @@ const AppleVarietyForm = () => {
                     value={formData.shape}
                     onChange={handleChange}
                     className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    required
                   />
                 </div>
                 <div>
@@ -398,6 +419,7 @@ const AppleVarietyForm = () => {
                     value={formData.skin}
                     onChange={handleChange}
                     className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    required
                   />
                 </div>
                 <div>
@@ -414,6 +436,7 @@ const AppleVarietyForm = () => {
                     value={formData.fruitFlesh}
                     onChange={handleChange}
                     className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    required
                   />
                 </div>
               </div>
@@ -440,6 +463,7 @@ const AppleVarietyForm = () => {
                   value={formData.vigour}
                   onChange={handleChange}
                   className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
                 />
               </div>
               <div>
@@ -456,6 +480,7 @@ const AppleVarietyForm = () => {
                   value={formData.blossom}
                   onChange={handleChange}
                   className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
                 />
               </div>
               <div>
@@ -472,6 +497,7 @@ const AppleVarietyForm = () => {
                   value={formData.pollinator}
                   onChange={handleChange}
                   className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
                 />
               </div>
             </div>
@@ -497,6 +523,7 @@ const AppleVarietyForm = () => {
                   value={formData.growth}
                   onChange={handleChange}
                   className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
                 />
               </div>
               <div>
@@ -513,6 +540,7 @@ const AppleVarietyForm = () => {
                   value={formData.maturity}
                   onChange={handleChange}
                   className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
                 />
               </div>
               <div>
@@ -529,6 +557,7 @@ const AppleVarietyForm = () => {
                   value={formData.size}
                   onChange={handleChange}
                   className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  required
                 />
               </div>
             </div>
@@ -553,6 +582,7 @@ const AppleVarietyForm = () => {
                 onChange={handleChange}
                 className="w-full p-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 rows="3"
+                required
               />
               <p className="text-sm text-gray-500">
                 {formData.companyExp.trim().split(/\s+/).length} / 50 words
