@@ -15,7 +15,7 @@ const WelcomeScreen = () => {
         </p>
 
         {/* CTA Button */}
-        <Link href="https://google.com" target="_blank">
+        <Link href="https://alilals.com" target="_blank">
           <div className="bg-white text-green-700 px-8 py-4 rounded-full font-semibold hover:bg-green-600 hover:text-white transition-transform transform hover:scale-105 shadow-lg">
             Visit Main Website
           </div>
