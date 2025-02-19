@@ -68,10 +68,10 @@ const AppleVarietyForm = () => {
     // Check word count for characteristics and experience fields
     if (name === "characteristics" || name === "companyExp") {
       const wordCount = value.trim().split(/\s+/).length;
-      if (wordCount > 50) {
+      if (wordCount > 100) {
         toast({
           title: "Word limit exceeded!",
-          description: "Text cannot exceed 50 words.",
+          description: "Text cannot exceed 100 words.",
           className: "bg-red-500 text-white border border-red-700",
         });
         return;
@@ -307,7 +307,7 @@ const AppleVarietyForm = () => {
                   className="block text-green-600 font-bold mb-2"
                   htmlFor="characteristics"
                 >
-                  Characteristics (Max 50 words)
+                  Characteristics (Max 100 words)
                 </label>
                 <textarea
                   name="characteristics"
@@ -319,7 +319,7 @@ const AppleVarietyForm = () => {
                   required
                 />
                 <p className="text-sm text-gray-500">
-                  {formData.characteristics.trim().split(/\s+/).length} / 50
+                  {formData.characteristics.trim().split(/\s+/).length} / 100
                   words
                 </p>
               </div>
@@ -573,7 +573,7 @@ const AppleVarietyForm = () => {
                 className="block text-green-600 font-bold mb-2"
                 htmlFor="experience"
               >
-                Experience (Max 50 words)
+                Experience (Max 100 words)
               </label>
               <textarea
                 name="companyExp"
@@ -585,7 +585,7 @@ const AppleVarietyForm = () => {
                 required
               />
               <p className="text-sm text-gray-500">
-                {formData.companyExp.trim().split(/\s+/).length} / 50 words
+                {formData.companyExp.trim().split(/\s+/).length} / 100 words
               </p>
             </div>
           </div>
