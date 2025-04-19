@@ -2,13 +2,12 @@
 
 import { useFirestore } from "@/contexts/FirestoreContext";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 const AlertForm = () => {
-  const { alertData, updateData, loading } = useFirestore();
-  const router = useRouter();
+  const { alertData, updateData, addData, loading } = useFirestore();
+
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -20,6 +19,7 @@ const AlertForm = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [imageError, setImageError] = useState("");
   const [published, setPublished] = useState(false);
+  const [isNewAlert, setIsNewAlert] = useState(true);
 
   // Generate unique id for image
   const generateUniqueId = () => uuidv4();
@@ -34,7 +34,7 @@ const AlertForm = () => {
       if (wordCount > 100) {
         toast({
           title: "Word limit exceeded!",
-          description: "Brief cannot exceed 50 words.",
+          description: "Brief cannot exceed 100 words.",
           className: "bg-red-500 text-white border border-red-700",
         });
         return;
@@ -95,17 +95,33 @@ const AlertForm = () => {
       const newDate = `${day}-${month}-${year}`;
       const data = { ...formData, imageId, publish: !published, date: newDate };
 
-      const result = await updateData(alertData[0].id, data, "alert");
+      let result;
+
+      if (isNewAlert) {
+        // Create new alert
+        result = await addData(data, "alert");
+        setIsNewAlert(false); // After creation, next submission will be an update
+      } else {
+        // Update existing alert
+        result = await updateData(alertData[0].id, data, "alert");
+      }
+
       setPublished(!published);
 
       toast({
-        title: result.message,
+        title:
+          result.message ||
+          (isNewAlert
+            ? "Alert created successfully!"
+            : "Alert updated successfully!"),
         description: "",
         className: `${result.success ? "bg-green-500 border-green-700" : "bg-red-500 border-red-700"} text-white border`,
       });
     } catch (error) {
       toast({
-        title: "Failed to update alert!",
+        title: isNewAlert
+          ? "Failed to create alert!"
+          : "Failed to update alert!",
         description: error.message,
         className: "bg-red-500 text-white border border-red-700",
       });
@@ -113,7 +129,8 @@ const AlertForm = () => {
   };
 
   useEffect(() => {
-    if (alertData.length && !formData.title) {
+    if (alertData && alertData.length > 0) {
+      setIsNewAlert(false);
       const [day, month, year] = alertData[0].date.split("-");
       const newDate = `${year}-${month}-${day}`;
       setFormData({
@@ -123,8 +140,19 @@ const AlertForm = () => {
       });
       setImagePreview(alertData[0].imageUrl);
       setPublished(alertData[0].publish);
+    } else {
+      setIsNewAlert(true);
+      // Set default date to today
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, "0");
+      const day = String(today.getDate()).padStart(2, "0");
+      setFormData((prev) => ({
+        ...prev,
+        date: `${year}-${month}-${day}`,
+      }));
     }
-  }, [alertData, router, toast]);
+  }, [alertData]);
 
   return (
     <div className="max-w-7xl mx-auto p-8 mt-10 relative">
@@ -132,7 +160,7 @@ const AlertForm = () => {
         {/* Form Section */}
         <div className="w-full bg-green-50 p-8 rounded-xl shadow-lg">
           <h2 className="text-3xl font-bold text-green-700 mb-6 text-center">
-            "Set Alert"
+            {isNewAlert ? "Create Alert" : "Update Alert"}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title Field */}
@@ -242,12 +270,16 @@ const AlertForm = () => {
                 className="px-6 py-3 bg-green-600 text-white font-bold rounded-full hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-500"
               >
                 {loading
-                  ? published
-                    ? "Unpublishing Alert..."
-                    : "Publishing Alert..."
-                  : published
-                    ? "Unpublish"
-                    : "Publish"}
+                  ? isNewAlert
+                    ? "Creating Alert..."
+                    : published
+                      ? "Unpublishing Alert..."
+                      : "Publishing Alert..."
+                  : isNewAlert
+                    ? "Create Alert"
+                    : published
+                      ? "Unpublish"
+                      : "Publish"}
               </button>
             </div>
           </form>
