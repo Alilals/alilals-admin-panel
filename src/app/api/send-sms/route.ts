@@ -3,8 +3,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 interface SMSRequestBody {
-  sender_id: string;
-  message: string;
+  header: string;
+  template_id: string;
   numbers: string;
   variables_values?: string[];
   schedule_time?: string; // Expected format: DD-MM-YYYY-HH-MM
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     const body: SMSRequestBody = await request.json();
 
     // Validate required fields
-    if (!body.sender_id || !body.message || !body.numbers) {
+    if (!body.header || !body.template_id || !body.numbers) {
       return NextResponse.json(
         { error: 'Missing required fields: sender_id, message, or numbers' },
         { status: 400 }
@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
     const params = new URLSearchParams({
       authorization,
       route,
-      sender_id: body.sender_id,
-      message: body.message,
+      sender_id: body.header,
+      message: body.template_id,
       flash,
       numbers: body.numbers,
     });
