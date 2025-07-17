@@ -2,8 +2,8 @@
 
 export interface TemplateEntry {
   template: string;
-  'variable-count': number;
-  "template_id":string;
+  "variable-count": number;
+  template_id: string;
 }
 
 export interface TemplateMap {
@@ -13,11 +13,10 @@ export interface TemplateMap {
 const templates: TemplateMap = {
   ALIAGR: [
     {
-        "template":
+      template:
         "Welcome to ALILAS  We're excited to have you onboard. At {#var#}, we strive to offer the best experience and support to help you get started. Whether you're here to explore, grow, or collaborate, we're here to guide you every step of the way.",
-        'variable-count': 1,
-        "template_id":"188673",
-      
+      "variable-count": 1,
+      template_id: "188673",
     },
   ],
 };
