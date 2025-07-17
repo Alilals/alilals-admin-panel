@@ -23,8 +23,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Fixed parameters
-    const authorization =
-      "DqsrP6UwBJxAX1TbRgG3CVHldf4oQaINh7ZyeuEtpSc5vimL09h2Da75ActlHQyUWiOmGobMReJXYfIj";
+    const authorization = process.env.FAST2SMSKEY;
     const route = "dlt";
     const flash = "0";
 
