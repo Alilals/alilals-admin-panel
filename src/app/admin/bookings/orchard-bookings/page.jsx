@@ -26,20 +26,36 @@ const headers = [
     value: "totalLand",
   },
   {
-    key: "Post Gap",
-    value: "postGap",
+    key: "Trellis Type",
+    value: "trellisType",
   },
   {
-    key: "Row Gap",
-    value: "rowGap",
+    key: "Side Anchors",
+    value: "sideAnchors",
   },
   {
-    key: "Post Type",
-    value: "postType",
+    key: "Cross Wire",
+    value: "crossWire",
   },
   {
-    key: "Wire Pattern",
-    value: "wirePattern",
+    key: "Post Caps",
+    value: "postCaps",
+  },
+  {
+    key: "Top Wire Hail Net",
+    value: "topWireHailNet",
+  },
+  {
+    key: "Header Assembly",
+    value: "headerAssembly",
+  },
+  {
+    key: "Ventury Injector",
+    value: "venturyInjector",
+  },
+  {
+    key: "Hydrocyclone Filter",
+    value: "hydrocycloneFilter",
   },
   {
     key: "Estimated Cost",

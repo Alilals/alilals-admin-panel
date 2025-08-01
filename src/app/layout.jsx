@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       >
         <AuthProvider>
           <FirestoreProvider>
-            <div className="hidden md:flex flex-grow">
+            <div className="hidden md:flex flex-grow overflow-x-hidden">
               <Sidebar />
               <div className="flex-grow bg-gray-50 h-[100vh] overflow-auto">
                 {children}

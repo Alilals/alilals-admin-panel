@@ -192,108 +192,179 @@ const Table = ({ headers = [], collectionName = "" }) => {
 
   return (
     <div className="container mx-auto p-6 bg-white shadow rounded-lg">
+      {/* Fixed header - no scroll */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-green-700">
           Total Records: {totalBookings}
         </h2>
         <button
           onClick={handleDownloadCSV}
-          className="font-semibold bg-green-600 text-white hover:bg-green-700 px-2 py-3 mr-5 border border-green-600 rounded-lg"
+          className="font-semibold bg-green-600 text-white hover:bg-green-700 px-4 py-2 border border-green-600 rounded-lg transition-colors duration-200"
         >
           Download CSV
         </button>
       </div>
 
-      <div className="overflow-scroll w-full h-[69vh]">
-        <table className="min-w-full border-collapse border border-green-300 bg-green-50 text-sm text-gray-700">
-          <thead>
-            <tr className="bg-green-600 text-white">
-              {extendedHeaders.map((header, index) => (
-                <th
-                  key={index}
-                  className="px-4 py-3 text-left font-medium border border-green-300"
-                >
-                  {header.key}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td
-                  colSpan={extendedHeaders.length}
-                  className="px-4 py-3 text-center"
-                >
-                  Loading...
-                </td>
-              </tr>
-            ) : currentPageData.length > 0 ? (
-              currentPageData.map((item, rowIndex) => (
-                <tr
-                  key={item.id}
-                  className="hover:bg-green-100 even:bg-green-50 odd:bg-green-100"
-                >
-                  {/* Index column */}
-                  <td className="px-4 py-3 border border-green-300 text-center">
-                    {startIndex + rowIndex + 1}
-                  </td>
-                  {headers.map((header, index) => (
-                    <td
+      {/* Table section with isolated scroll */}
+      <div className="mb-6">
+        <div className="border border-gray-200 rounded-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full">
+              <thead>
+                <tr className="bg-green-600 text-white">
+                  {extendedHeaders.map((header, index) => (
+                    <th
                       key={index}
-                      className="px-4 py-3 border border-green-300"
+                      className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider border-r border-green-500 last:border-r-0 whitespace-nowrap"
                     >
-                      {item[header.value]}
-                    </td>
+                      {header.key}
+                    </th>
                   ))}
-                  {/* Date column */}
-                  <td className="px-4 py-3 border border-green-300">
-                    {format(new Date(item.createdAt), "dd MMM yyyy: HH:mm")}
-                  </td>
-                  {/* Checkbox column */}
-                  <td className="px-4 py-3 border border-green-300 text-center">
-                    <input
-                      type="checkbox"
-                      checked={item.checked}
-                      onChange={(event) => handleCheckboxChange(item, event)}
-                      className="cursor-pointer"
-                    />
-                  </td>
-                  {/* Actions column with Delete button */}
-                  <td className="px-4 py-3 border border-green-300 text-center">
-                    <button
-                      onClick={() => handleDelete(item)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      Delete
-                    </button>
-                  </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={extendedHeaders.length}
-                  className="px-4 py-3 text-center"
-                >
-                  No data available
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {loading ? (
+                  <tr>
+                    <td
+                      colSpan={extendedHeaders.length}
+                      className="px-4 py-8 text-center text-gray-500"
+                    >
+                      <div className="flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600 mr-2"></div>
+                        Loading...
+                      </div>
+                    </td>
+                  </tr>
+                ) : currentPageData.length > 0 ? (
+                  currentPageData.map((item, rowIndex) => (
+                    <tr
+                      key={item.id}
+                      className="hover:bg-gray-50 transition-colors duration-150"
+                    >
+                      {/* Index column */}
+                      <td className="px-4 py-3 text-sm text-gray-900 text-center border-r border-gray-200 bg-gray-50">
+                        <span className="font-medium">
+                          {startIndex + rowIndex + 1}
+                        </span>
+                      </td>
+                      {headers.map((header, index) => (
+                        <td
+                          key={index}
+                          className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200 last:border-r-0"
+                        >
+                          <div className="max-w-xs">
+                            <span className="truncate block">
+                              {item[header.value] || "-"}
+                            </span>
+                          </div>
+                        </td>
+                      ))}
+                      {/* Date column */}
+                      <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200">
+                        <span className="text-gray-600">
+                          {format(
+                            new Date(item.createdAt),
+                            "dd MMM yyyy: HH:mm"
+                          )}
+                        </span>
+                      </td>
+                      {/* Checkbox column */}
+                      <td className="px-4 py-3 text-sm text-gray-900 border-r border-gray-200 text-center">
+                        <input
+                          type="checkbox"
+                          checked={item.checked}
+                          onChange={(event) =>
+                            handleCheckboxChange(item, event)
+                          }
+                          className="w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2 cursor-pointer"
+                        />
+                      </td>
+                      {/* Actions column */}
+                      <td className="px-4 py-3 text-sm text-gray-900 text-center">
+                        <button
+                          onClick={() => handleDelete(item)}
+                          className="inline-flex items-center px-3 py-1 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={extendedHeaders.length}
+                      className="px-4 py-8 text-center text-gray-500"
+                    >
+                      <div className="flex flex-col items-center">
+                        <svg
+                          className="w-12 h-12 text-gray-400 mb-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                        No data available
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Scroll hint */}
+        <div className="mt-2 text-xs text-gray-500 text-center">
+          <span className="inline-flex items-center">
+            <svg
+              className="w-4 h-4 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M7 16l-4-4m0 0l4-4m-4 4h18"
+              />
+            </svg>
+            Scroll horizontally to see more columns
+          </span>
+        </div>
       </div>
 
-      <div className="flex justify-between items-center mt-4">
+      {/* Fixed pagination - no scroll */}
+      <div className="flex justify-between items-center">
         <button
           onClick={() => handlePageChange("prev")}
           disabled={currentPage === 1 || loading}
-          className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+          className={`px-4 py-2 rounded-lg transition-colors duration-200 flex items-center ${
             currentPage === 1 || loading
-              ? "bg-green-300 text-gray-500 cursor-not-allowed"
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-green-600 text-white hover:bg-green-700"
           }`}
         >
+          <svg
+            className="w-4 h-4 mr-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
           Previous
         </button>
 
@@ -306,13 +377,26 @@ const Table = ({ headers = [], collectionName = "" }) => {
           disabled={
             currentPage === Math.ceil(totalBookings / itemsPerPage) || loading
           }
-          className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+          className={`px-4 py-2 rounded-lg transition-colors duration-200 flex items-center ${
             currentPage === Math.ceil(totalBookings / itemsPerPage) || loading
-              ? "bg-green-300 text-gray-500 cursor-not-allowed"
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
               : "bg-green-600 text-white hover:bg-green-700"
           }`}
         >
           Next
+          <svg
+            className="w-4 h-4 ml-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
         </button>
       </div>
 

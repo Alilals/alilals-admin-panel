@@ -17,7 +17,7 @@ const page = () => {
     try {
       await loginWithGoogle();
       toast({
-        title: "Logging in,,,",
+        title: "Logging in...",
         description: "",
         className: "bg-yellow-500 text-white border border-yellow-700",
         duration: 1000,

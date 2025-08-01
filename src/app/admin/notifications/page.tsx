@@ -114,7 +114,7 @@ const NotificationsPage = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search by Project ID or Name (partial match)..."
+            placeholder="Search by Project ID or Name"
             className="bg-transparent flex-grow outline-none text-green-700 placeholder-green-500"
           />
         </div>
