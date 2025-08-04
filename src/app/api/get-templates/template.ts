@@ -27,6 +27,24 @@ const templates: TemplateMap = {
       "variable-count": 1,
       template_id: "191100",
     },
+    {
+      template:
+        "We have received Rs. {#var#} for project ID {#var#}. Our representative will shortly connect with you for {#var#} .Team ZIRAAT®",
+      "variable-count": 3,
+      template_id: "191099",
+    },
+    {
+      template:
+        "Dear Grower {#var#}!We’re thrilled to have you with us. Project ID {#var#} has been assigned to your orchard for future reference. Your orchard development journey begins here—with expert care, precision farming, and sustainable solutions.Let’s grow success together! Team ZIRAAT® {#var#}.",
+      "variable-count": 3,
+      template_id: "191054",
+    },
+    {
+      template:
+        "ZIRAAT® by Alialls Agrico Pvt Ltd offers farmer-friendly High-Density Orchard installation and allied services with expert support. Click here {#var#} to Book service online for March {#var#} plantation. Or call us at 8899-888-983.",
+      "variable-count": 2,
+      template_id: "191053",
+    },
   ],
 };
 
