@@ -464,7 +464,7 @@ const NotificationCalendar = () => {
             smsData.schedule_time = formatDateFns(smsDate, "dd-MM-yyyy-HH-mm");
           }
 
-          const response = await fetch("http://localhost:4000/api/send-sms", {
+          const response = await fetch("/api/send-sms", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
