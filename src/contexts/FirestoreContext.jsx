@@ -12,6 +12,7 @@ import {
   doc,
   getFirestore,
   updateDoc,
+  getCountFromServer,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -29,6 +30,7 @@ export const FirestoreProvider = ({ children }) => {
   const [blogsData, setBlogsData] = useState([]);
   const [projectsData, setProjectsData] = useState([]);
   const [applesData, setApplesData] = useState([]);
+  const [usersCount, setUsersCount] = useState(0);
   const [alertData, setAlertData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -73,6 +75,10 @@ export const FirestoreProvider = ({ children }) => {
         ...doc.data(),
       }));
       setAlertData(fetchedAlert);
+      const usersCollection = collection(db, "users");
+      const usersSnapshot = await getCountFromServer(usersCollection);
+
+      setUsersCount(usersSnapshot.data().count);
       setLoading(false);
     };
 
@@ -639,6 +645,7 @@ export const FirestoreProvider = ({ children }) => {
         projectsData,
         applesData,
         alertData,
+        usersCount,
         loading,
         addData,
         deleteData,

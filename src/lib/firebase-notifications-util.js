@@ -18,14 +18,22 @@ export const db = getFirestore(app);
 // Collection reference
 export const usersCollection = collection(db, "users");
 
-// Add new user
+// Add new user (only Project Details fields)
 export const addUser = async (userData) => {
   try {
-    const docRef = await addDoc(usersCollection, {
-      ...userData,
+    // Only include Project Details fields
+    const projectDetails = {
+      projectId: userData.projectId,
+      nameOfGrower: userData.nameOfGrower,
+      parentageOfGrower: userData.parentageOfGrower,
+      addressOfGrower: userData.addressOfGrower,
+      phoneNumber: userData.phoneNumber,
+      plotSize: userData.plotSize,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    });
+    };
+
+    const docRef = await addDoc(usersCollection, projectDetails);
     return docRef.id;
   } catch (error) {
     throw new Error(`Failed to add user: ${error.message}`);
@@ -48,14 +56,23 @@ export const getUserById = async (userId) => {
   }
 };
 
-// Update user
+// Update user (only Project Details fields)
 export const updateUser = async (userId, userData) => {
   try {
     const docRef = doc(db, "users", userId);
-    await updateDoc(docRef, {
-      ...userData,
+
+    // Only update Project Details fields
+    const projectDetails = {
+      projectId: userData.projectId,
+      nameOfGrower: userData.nameOfGrower,
+      parentageOfGrower: userData.parentageOfGrower,
+      addressOfGrower: userData.addressOfGrower,
+      phoneNumber: userData.phoneNumber,
+      plotSize: userData.plotSize,
       updatedAt: new Date().toISOString(),
-    });
+    };
+
+    await updateDoc(docRef, projectDetails);
   } catch (error) {
     throw new Error(`Failed to update user: ${error.message}`);
   }
@@ -154,9 +171,20 @@ export const addTaskToUser = async (userId, date, task) => {
       id: Date.now().toString(), // Simple ID generation
       title: task.title,
       description: task.description,
+      sendNotification: task.sendNotification, // Always present
       createdAt: new Date().toISOString(),
       date: date,
     };
+
+    // Add SMS-related data if notification is enabled
+    if (task.sendNotification === "yes") {
+      taskData.template_id = task.template_id;
+      taskData.template_title = task.template_title;
+      taskData.template_text = task.template_text;
+      taskData.variables = task.variables;
+      taskData.scheduleDate = task.scheduleDate;
+      taskData.scheduleTime = task.scheduleTime;
+    }
 
     // Get current user data
     const userDoc = await getDoc(userRef);

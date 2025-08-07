@@ -1,5 +1,4 @@
 "use client";
-
 import {
   LayoutDashboard,
   TriangleAlert,
@@ -11,11 +10,65 @@ import {
   BookA,
   AppleIcon,
   Bell,
+  Megaphone,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+
+const sidebarMenu = [
+  {
+    label: "Dashboard",
+    href: "/admin/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "Admins",
+    href: "/admin/admins",
+    icon: Crown,
+  },
+  {
+    label: "Alert",
+    href: "/admin/alert",
+    icon: TriangleAlert,
+  },
+  {
+    label: "Apple Varieties",
+    href: "/admin/apples",
+    icon: AppleIcon,
+  },
+  {
+    label: "Blogs",
+    href: "/admin/blogs",
+    icon: Newspaper,
+  },
+  {
+    label: "Bookings",
+    href: "/admin/bookings",
+    icon: BookA,
+  },
+  {
+    label: "Marketting",
+    href: "/admin/marketting",
+    icon: Megaphone,
+  },
+  {
+    label: "Notifications",
+    href: "/admin/notifications",
+    icon: Bell,
+  },
+  {
+    label: "Projects",
+    href: "/admin/projects",
+    icon: FolderRoot,
+  },
+  {
+    label: "Stats",
+    href: "/admin/stats",
+    icon: ChartArea,
+  },
+];
 
 const Sidebar = () => {
   const { logout, currentUser } = useAuth();
@@ -33,6 +86,9 @@ const Sidebar = () => {
     });
   };
 
+  // For exact /admin, highlight the Dashboard
+  const activePath = pathname === "/admin" ? "/admin/dashboard" : pathname;
+
   return (
     <div className={`flex ${!currentUser ? "hidden" : ""}`}>
       {/* Sidebar */}
@@ -44,99 +100,31 @@ const Sidebar = () => {
               Alilals Admin
             </h1>
           </Link>
-
           {/* Menu Items */}
           <ul className="space-y-4">
-            <li>
-              <Link
-                href="/admin/dashboard"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/dashboard" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
-              >
-                <LayoutDashboard className="w-5 h-5 mr-3" />
-                Dashboard
-              </Link>
-            </li>
+            {sidebarMenu.map(({ href, label, icon: Icon }) => {
+              // active if the current path starts with href
+              const isActive =
+                activePath.startsWith(href) &&
+                // avoid, e.g. /admin/apples matching /admin/application
+                (activePath === href || activePath.startsWith(href + "/"));
 
-            <li>
-              <Link
-                href="/admin/admins"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/admins" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
-              >
-                <Crown className="w-5 h-5 mr-3" />
-                Admins
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/admin/alert"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/alert" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
-              >
-                <TriangleAlert className="w-5 h-5 mr-3" />
-                Alert
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/admin/apples"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/apples" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
-              >
-                <AppleIcon className="w-5 h-5 mr-3" />
-                Apple Varieties
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/admin/blogs"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/blogs" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
-              >
-                <Newspaper className="w-5 h-5 mr-3" />
-                Blogs
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/admin/bookings"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/bookings" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
-              >
-                <BookA className="w-5 h-5 mr-3" />
-                Bookings
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/admin/projects"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/projects" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
-              >
-                <FolderRoot className="w-5 h-5 mr-3" />
-                Projects
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/admin/stats"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/stats" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
-              >
-                <ChartArea className="w-5 h-5 mr-3" />
-                Stats
-              </Link>
-            </li>
-
-            <li>
-              <Link
-                href="/admin/notifications"
-                className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out hover:shadow-md hover:bg-green-100 hover:text-green-700 ${pathname === "/admin/stats" ? "bg-green-100 text-green-700 shadow-md" : ""}`}
-              >
-                <Bell className="w-5 h-5 mr-3" />
-                Notifications
-              </Link>
-            </li>
-
+              return (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className={`flex items-center p-3 text-gray-800 rounded-lg transition-all duration-300 ease-in-out
+                      hover:shadow-md hover:bg-green-100 hover:text-green-700
+                      ${isActive ? "bg-green-100 text-green-700 shadow-md" : ""}
+                    `}
+                  >
+                    <Icon className="w-5 h-5 mr-3" />
+                    {label}
+                  </Link>
+                </li>
+              );
+            })}
+            {/* Logout */}
             <li>
               <div
                 onClick={logoutHandler}
@@ -148,7 +136,6 @@ const Sidebar = () => {
             </li>
           </ul>
         </div>
-
         {/* Footer */}
         <div className="p-4 bg-green-200 text-green-800 text-center">
           &copy; 2025 Alilals Agrico

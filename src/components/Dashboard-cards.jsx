@@ -5,8 +5,14 @@ import React from "react";
 import * as LucideIcons from "lucide-react";
 
 const DashboardCards = () => {
-  const { adminsData, blogsData, statsData, projectsData, applesData } =
-    useFirestore();
+  const {
+    adminsData,
+    blogsData,
+    statsData,
+    projectsData,
+    applesData,
+    usersCount,
+  } = useFirestore();
 
   const cards = [
     {
@@ -33,6 +39,11 @@ const DashboardCards = () => {
       title: "Stats",
       count: statsData.length,
       icon: "ChartArea",
+    },
+    {
+      title: "Users",
+      count: usersCount,
+      icon: "Users",
     },
   ];
 

@@ -52,7 +52,7 @@ const UserDetailsPage = () => {
           toast({
             title: "Error",
             description: "User not found.",
-            variant: "destructive",
+            className: "bg-red-500 text-white border border-red-700",
           });
           router.push("/admin/notifications");
         }
@@ -61,7 +61,7 @@ const UserDetailsPage = () => {
         toast({
           title: "Error",
           description: "Failed to fetch user details.",
-          variant: "destructive",
+          className: "bg-red-500 text-white border border-red-700",
         });
       } finally {
         setLoading(false);
@@ -79,13 +79,14 @@ const UserDetailsPage = () => {
       toast({
         title: "Success",
         description: "User deleted successfully!",
+        className: "bg-green-500 text-white border border-green-700",
       });
       router.push("/admin/notifications");
     } catch {
       toast({
         title: "Error",
         description: "Failed to delete user.",
-        variant: "destructive",
+        className: "bg-red-500 text-white border border-red-700",
       });
     }
   };
@@ -155,102 +156,6 @@ const UserDetailsPage = () => {
             { key: "addressOfGrower", label: "Address of Grower" },
             { key: "phoneNumber", label: "Phone Number" },
             { key: "plotSize", label: "Plot Size" },
-          ],
-          user
-        )}
-
-        {/* Soil Health Status */}
-        {renderSection(
-          "B: Soil Health Status",
-          [
-            {
-              key: "soilSampleCollectionDate",
-              label: "Soil Sample Collection Date",
-            },
-            { key: "soilTestingDate", label: "Soil Testing Date" },
-            { key: "soilHealthStatus", label: "Soil Health Status" },
-            { key: "recommendations", label: "Recommendations" },
-          ],
-          user
-        )}
-
-        {/* Site Plan & Layout Status */}
-        {renderSection(
-          "C: Site Plan & Layout Status",
-          [
-            { key: "layoutDateInitiation", label: "Layout Date - Initiation" },
-            { key: "layoutDateCompletion", label: "Layout Date - Completion" },
-          ],
-          user
-        )}
-
-        {/* Project Cost Estimation */}
-        {renderSection(
-          "D: Project Cost Estimation",
-          [
-            {
-              key: "siteAreaInTrellisKanals",
-              label: "Site Area in Trellis Kanals",
-            },
-            { key: "initialEstimateAmount", label: "Initial Estimate Amount" },
-          ],
-          user
-        )}
-
-        {/* Trellis & Irrigation Installation */}
-        {renderSection(
-          "E: Trellis & Irrigation Installation",
-          [
-            { key: "installationDate", label: "Installation Date" },
-            { key: "completionDate", label: "Completion Date" },
-          ],
-          user
-        )}
-
-        {/* Booking Status */}
-        {renderSection(
-          "F: Booking Status",
-          [
-            { key: "bookingDate", label: "Booking Date" },
-            { key: "bookingAmount", label: "Booking Amount" },
-            { key: "bookingSerialNo", label: "Booking Serial No." },
-          ],
-          user
-        )}
-
-        {/* Payment Status */}
-        {renderSection(
-          "G: Payment Status",
-          [
-            {
-              key: "firstInstallmentAmount",
-              label: "First Installment Amount (Plant Confirmation)",
-            },
-            {
-              key: "firstInstallmentDueDate",
-              label: "First Installment Due Date",
-            },
-            {
-              key: "estimatedDateOfPlantation",
-              label: "Estimated Date of Plantation",
-            },
-            {
-              key: "secondInstallmentAmount",
-              label: "Second Installment Amount",
-            },
-            {
-              key: "secondInstallmentDueDate",
-              label: "Second Installment Due Date",
-            },
-            {
-              key: "thirdInstallmentAmount",
-              label: "Third Installment Amount",
-            },
-            {
-              key: "thirdInstallmentDueDate",
-              label: "Third Installment Due Date",
-            },
-            { key: "plantationSerialNo", label: "Plantation Serial No." },
           ],
           user
         )}

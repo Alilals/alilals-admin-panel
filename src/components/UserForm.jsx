@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { addUser, updateUser } from "@/lib/firebase-notifications-util";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase-notifications-util";
 
 const UserForm = ({
   isEdit = false,
@@ -22,48 +24,42 @@ const UserForm = ({
     addressOfGrower: "",
     phoneNumber: "",
     plotSize: "",
-
-    // Soil Health Status
-    soilSampleCollectionDate: "",
-    soilTestingDate: "",
-    soilHealthStatus: "",
-    recommendations: "",
-
-    // Site Plan & Layout Status
-    layoutDateInitiation: "",
-    layoutDateCompletion: "",
-
-    // Project Cost Estimation
-    siteAreaInTrellisKanals: "",
-    initialEstimateAmount: "",
-
-    // Trellis & Irrigation Installation
-    installationDate: "",
-    completionDate: "",
-
-    // Booking Status
-    bookingDate: "",
-    bookingAmount: "",
-    bookingSerialNo: "",
-
-    // Payment Status
-    firstInstallmentAmount: "",
-    firstInstallmentDueDate: "",
-    estimatedDateOfPlantation: "",
-    secondInstallmentAmount: "",
-    secondInstallmentDueDate: "",
-    thirdInstallmentAmount: "",
-    thirdInstallmentDueDate: "",
-    plantationSerialNo: "",
   });
 
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isEdit && initialData) {
-      setFormData(initialData);
+      setFormData({
+        projectId: initialData.projectId || "",
+        nameOfGrower: initialData.nameOfGrower || "",
+        parentageOfGrower: initialData.parentageOfGrower || "",
+        addressOfGrower: initialData.addressOfGrower || "",
+        phoneNumber: initialData.phoneNumber || "",
+        plotSize: initialData.plotSize || "",
+      });
     }
   }, [isEdit, initialData]);
+
+  const checkDuplicateProjectId = async (projectId) => {
+    try {
+      const usersQuery = query(
+        collection(db, "users"),
+        where("projectId", "==", projectId)
+      );
+      const querySnapshot = await getDocs(usersQuery);
+
+      // If editing, exclude the current user from duplicate check
+      if (isEdit && userId) {
+        return querySnapshot.docs.some((doc) => doc.id !== userId);
+      }
+
+      return !querySnapshot.empty;
+    } catch (error) {
+      console.error("Error checking duplicate project ID:", error);
+      return false;
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -96,10 +92,25 @@ const UserForm = ({
           title: "Validation Error",
           description:
             "Please fill in all required fields in Project Details section.",
-          variant: "destructive",
+          className: "bg-red-500 text-white border border-red-700",
         });
         setLoading(false);
         return;
+      }
+
+      // Check for duplicate project ID (only for new users or if project ID changed)
+      if (!isEdit || (isEdit && formData.projectId !== initialData.projectId)) {
+        const isDuplicate = await checkDuplicateProjectId(formData.projectId);
+        if (isDuplicate) {
+          toast({
+            title: "Duplicate Project ID",
+            description:
+              "A user with this Project ID already exists. Please use a different Project ID.",
+            className: "bg-red-500 text-white border border-red-700",
+          });
+          setLoading(false);
+          return;
+        }
       }
 
       if (isEdit && userId) {
@@ -107,14 +118,14 @@ const UserForm = ({
         toast({
           title: "Success",
           description: "User updated successfully!",
-          variant: "success",
+          className: "bg-green-500 text-white border border-green-700",
         });
       } else {
         await addUser(formData);
         toast({
           title: "Success",
           description: "User created successfully!",
-          variant: "success",
+          className: "bg-green-500 text-white border border-green-700",
         });
       }
 
@@ -124,7 +135,7 @@ const UserForm = ({
         title: "Error",
         description:
           error.message || "An error occurred while saving the user.",
-        variant: "destructive",
+        className: "bg-red-500 text-white border border-red-700",
       });
     } finally {
       setLoading(false);
@@ -186,120 +197,6 @@ const UserForm = ({
           },
           { name: "plotSize", label: "Plot Size", required: true },
         ])}
-
-        {/* Only show additional sections when editing */}
-        {isEdit && (
-          <>
-            {/* Soil Health Status */}
-            {renderSection("B: Soil Health Status", [
-              {
-                name: "soilSampleCollectionDate",
-                label: "Soil Sample Collection Date",
-                type: "date",
-              },
-              {
-                name: "soilTestingDate",
-                label: "Soil Testing Date",
-                type: "date",
-              },
-              { name: "soilHealthStatus", label: "Soil Health Status" },
-              { name: "recommendations", label: "Recommendations" },
-            ])}
-
-            {/* Site Plan & Layout Status */}
-            {renderSection("C: Site Plan & Layout Status", [
-              {
-                name: "layoutDateInitiation",
-                label: "Layout Date - Initiation",
-                type: "date",
-              },
-              {
-                name: "layoutDateCompletion",
-                label: "Layout Date - Completion",
-                type: "date",
-              },
-            ])}
-
-            {/* Project Cost Estimation */}
-            {renderSection("D: Project Cost Estimation", [
-              {
-                name: "siteAreaInTrellisKanals",
-                label: "Site Area in Trellis Kanals",
-                type: "number",
-              },
-              {
-                name: "initialEstimateAmount",
-                label: "Initial Estimate Amount",
-                type: "number",
-              },
-            ])}
-
-            {/* Trellis & Irrigation Installation */}
-            {renderSection("E: Trellis & Irrigation Installation", [
-              {
-                name: "installationDate",
-                label: "Installation Date",
-                type: "date",
-              },
-              {
-                name: "completionDate",
-                label: "Completion Date",
-                type: "date",
-              },
-            ])}
-
-            {/* Booking Status */}
-            {renderSection("F: Booking Status", [
-              { name: "bookingDate", label: "Booking Date", type: "date" },
-              {
-                name: "bookingAmount",
-                label: "Booking Amount",
-                type: "number",
-              },
-              { name: "bookingSerialNo", label: "Booking Serial No." },
-            ])}
-
-            {/* Payment Status */}
-            {renderSection("G: Payment Status", [
-              {
-                name: "firstInstallmentAmount",
-                label: "First Installment Amount (Plant Confirmation)",
-                type: "number",
-              },
-              {
-                name: "firstInstallmentDueDate",
-                label: "First Installment Due Date",
-                type: "date",
-              },
-              {
-                name: "estimatedDateOfPlantation",
-                label: "Estimated Date of Plantation",
-                type: "date",
-              },
-              {
-                name: "secondInstallmentAmount",
-                label: "Second Installment Amount",
-                type: "number",
-              },
-              {
-                name: "secondInstallmentDueDate",
-                label: "Second Installment Due Date",
-                type: "date",
-              },
-              {
-                name: "thirdInstallmentAmount",
-                label: "Third Installment Amount",
-                type: "number",
-              },
-              {
-                name: "thirdInstallmentDueDate",
-                label: "Third Installment Due Date",
-                type: "date",
-              },
-              { name: "plantationSerialNo", label: "Plantation Serial No." },
-            ])}
-          </>
-        )}
 
         {/* Form Actions */}
         <div className="flex justify-end space-x-4 pt-6 border-t">
