@@ -172,6 +172,7 @@ export const addTaskToUser = async (userId, date, task) => {
       title: task.title,
       description: task.description,
       sendNotification: task.sendNotification, // Always present
+      frequency: task.frequency || "once", // Add frequency field with default value
       createdAt: new Date().toISOString(),
       date: date,
     };
@@ -207,6 +208,50 @@ export const addTaskToUser = async (userId, date, task) => {
     return taskData;
   } catch (error) {
     throw new Error(`Failed to add task: ${error.message}`);
+  }
+};
+
+// Update existing task (useful for editing tasks with frequency)
+export const updateTaskForUser = async (
+  userId,
+  date,
+  taskId,
+  updatedTaskData
+) => {
+  try {
+    const userRef = doc(db, "users", userId);
+
+    // Get current user data
+    const userDoc = await getDoc(userRef);
+    const userData = userDoc.data();
+
+    if (!userData.tasks || !userData.tasks[date]) {
+      throw new Error("No tasks found for this date");
+    }
+
+    // Find and update the specific task
+    const tasks = { ...userData.tasks };
+    const taskIndex = tasks[date].findIndex((task) => task.id === taskId);
+
+    if (taskIndex === -1) {
+      throw new Error("Task not found");
+    }
+
+    // Merge existing task data with updates
+    tasks[date][taskIndex] = {
+      ...tasks[date][taskIndex],
+      ...updatedTaskData,
+      frequency:
+        updatedTaskData.frequency || tasks[date][taskIndex].frequency || "once",
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Update the user document
+    await updateDoc(userRef, { tasks });
+
+    return tasks[date][taskIndex];
+  } catch (error) {
+    throw new Error(`Failed to update task: ${error.message}`);
   }
 };
 
@@ -253,5 +298,71 @@ export const getTasksForUser = async (userId) => {
     return userData.tasks || {};
   } catch (error) {
     throw new Error(`Failed to get tasks: ${error.message}`);
+  }
+};
+
+// Get tasks by frequency for analytics or reporting
+export const getTasksByFrequency = async (userId, frequency) => {
+  try {
+    const tasks = await getTasksForUser(userId);
+    const filteredTasks = [];
+
+    Object.keys(tasks).forEach((dateKey) => {
+      tasks[dateKey].forEach((task) => {
+        if (task.frequency === frequency) {
+          filteredTasks.push({
+            ...task,
+            date: dateKey,
+          });
+        }
+      });
+    });
+
+    return filteredTasks;
+  } catch (error) {
+    throw new Error(`Failed to get tasks by frequency: ${error.message}`);
+  }
+};
+
+// Migrate existing tasks to include frequency field (one-time migration helper)
+export const migrateTasksToIncludeFrequency = async (userId) => {
+  try {
+    const userRef = doc(db, "users", userId);
+    const userDoc = await getDoc(userRef);
+    const userData = userDoc.data();
+
+    if (!userData.tasks) {
+      return { message: "No tasks to migrate" };
+    }
+
+    const tasks = { ...userData.tasks };
+    let migratedCount = 0;
+
+    // Add frequency field to tasks that don't have it
+    Object.keys(tasks).forEach((dateKey) => {
+      tasks[dateKey] = tasks[dateKey].map((task) => {
+        if (!task.frequency) {
+          migratedCount++;
+          return {
+            ...task,
+            frequency: "once", // Default value for existing tasks
+            updatedAt: new Date().toISOString(),
+          };
+        }
+        return task;
+      });
+    });
+
+    if (migratedCount > 0) {
+      await updateDoc(userRef, { tasks });
+      return {
+        message: `Successfully migrated ${migratedCount} tasks to include frequency field`,
+        migratedCount,
+      };
+    }
+
+    return { message: "All tasks already have frequency field" };
+  } catch (error) {
+    throw new Error(`Failed to migrate tasks: ${error.message}`);
   }
 };

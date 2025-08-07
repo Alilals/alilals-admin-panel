@@ -53,7 +53,7 @@ const templates: TemplateMap = {
     },
     {
       template:
-        "Dear Grower!Your Site {#var#} has been assigned a Layout team. Team lead {#var#}, they will visit the site on {#var#}.Team ZIRAAT®",
+        "Dear Grower!Your Site {#project ID#} has been assigned a Layout team. Team lead {#lead_name#}, they will visit the site on {#layout_date#}.Team ZIRAAT®",
       "variable-count": 3,
       template_id: "194373",
       title: "Layout Team Deployment",

@@ -82,6 +82,7 @@ const NotificationCalendar = () => {
     templateVariables: [],
     scheduleDate: null,
     scheduleTime: "",
+    frequency: "once", // New frequency field
   });
 
   // Find user by projectId field
@@ -258,7 +259,40 @@ const NotificationCalendar = () => {
       templateVariables: [],
       scheduleDate: null,
       scheduleTime: "",
+      frequency: "once", // Reset frequency to default
     });
+  };
+
+  // Generate SMS schedule dates based on frequency
+  const generateSMSScheduleDates = (startDate, endDate, frequency) => {
+    const dates = [];
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Normalize end date to start of day for comparison
+    end.setHours(0, 0, 0, 0);
+
+    let current = new Date(start);
+
+    switch (frequency) {
+      case "once":
+        dates.push(new Date(start));
+        break;
+      case "alternate":
+        while (current <= end) {
+          dates.push(new Date(current));
+          current.setDate(current.getDate() + 2); // Add 2 days for alternate
+        }
+        break;
+      case "everyday":
+        while (current <= end) {
+          dates.push(new Date(current));
+          current.setDate(current.getDate() + 1); // Add 1 day for everyday
+        }
+        break;
+    }
+
+    return dates;
   };
 
   const handleAddTask = async () => {
@@ -303,6 +337,7 @@ const NotificationCalendar = () => {
         title: newTask.title,
         description: newTask.description,
         sendNotification: newTask.sendNotification,
+        frequency: newTask.frequency, // Store frequency in task data
       };
 
       // Add SMS data if notification is enabled
@@ -357,7 +392,10 @@ const NotificationCalendar = () => {
         taskData.template_id &&
         user.phoneNumber
       ) {
-        setTaskToSendSms(newTaskData);
+        setTaskToSendSms({
+          ...newTaskData,
+          taskAddedDate: selectedDate, // Store the task added date for frequency calculation
+        });
         setSmsDialogOpen(true);
       } else {
         toast({
@@ -389,42 +427,92 @@ const NotificationCalendar = () => {
     setSmsError(null);
 
     try {
-      const smsData = {
-        header: "ZIRAAT",
-        template_id: taskToSendSms.template_id,
-        numbers: user.phoneNumber,
-        variables_values: taskToSendSms.variables || [],
-      };
+      // Determine start date for SMS sending
+      const startDate = taskToSendSms.scheduleDate
+        ? new Date(taskToSendSms.scheduleDate)
+        : new Date(); // Current date if no schedule date
 
-      // Add schedule_time if date is selected
-      if (taskToSendSms.scheduleDate) {
-        smsData.schedule_time = formatDateFns(
-          taskToSendSms.scheduleDate,
-          "dd-MM-yyyy-HH-mm"
-        );
+      // End date is the date the task was added for
+      const endDate = taskToSendSms.taskAddedDate;
+
+      // Generate all SMS dates based on frequency
+      const smsScheduleDates = generateSMSScheduleDates(
+        startDate,
+        endDate,
+        taskToSendSms.frequency
+      );
+
+      console.log("SMS Schedule dates:", smsScheduleDates);
+
+      let successCount = 0;
+      let errorCount = 0;
+      const errors = [];
+
+      // Send SMS for each scheduled date
+      for (const smsDate of smsScheduleDates) {
+        try {
+          const smsData = {
+            header: "ZIRAAT",
+            template_id: taskToSendSms.template_id,
+            numbers: user.phoneNumber,
+            variables_values: taskToSendSms.variables || [],
+          };
+
+          // Add schedule_time if it's not the first SMS or if it's scheduled for future
+          const now = new Date();
+          if (smsDate > now) {
+            smsData.schedule_time = formatDateFns(smsDate, "dd-MM-yyyy-HH-mm");
+          }
+
+          const response = await fetch("http://localhost:4000/api/send-sms", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(smsData),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            successCount++;
+          } else {
+            errorCount++;
+            errors.push(
+              `${formatDateFns(smsDate, "PPP")}: ${result.error || "Failed to send SMS"}`
+            );
+          }
+        } catch (error) {
+          errorCount++;
+          errors.push(
+            `${formatDateFns(smsDate, "PPP")}: ${error.message || "Network error"}`
+          );
+        }
       }
 
-      const response = await fetch("http://localhost:4000/api/send-sms", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(smsData),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
+      // Show appropriate toast based on results
+      if (successCount > 0 && errorCount === 0) {
         toast({
           title: "Success",
-          description: "SMS sent successfully!",
+          description: `All ${successCount} SMS${successCount > 1 ? "s" : ""} scheduled successfully!`,
           className: "bg-green-500 text-white border border-green-700",
         });
-        setSmsDialogOpen(false);
-        setTaskToSendSms(null);
+      } else if (successCount > 0 && errorCount > 0) {
+        toast({
+          title: "Partial Success",
+          description: `${successCount} SMS${successCount > 1 ? "s" : ""} sent successfully, ${errorCount} failed. Check console for details.`,
+          className: "bg-orange-500 text-white border border-orange-700",
+        });
+        console.error("SMS sending errors:", errors);
       } else {
-        setSmsError(result.error || "Failed to send SMS");
+        setSmsError(
+          `All SMS sending failed. First error: ${errors[0] || "Unknown error"}`
+        );
+        return; // Don't close dialog if all failed
       }
+
+      setSmsDialogOpen(false);
+      setTaskToSendSms(null);
     } catch (error) {
       setSmsError(error.message || "Failed to send SMS");
     } finally {
@@ -565,6 +653,7 @@ const NotificationCalendar = () => {
       "Description",
       "Date",
       "Send Notification",
+      "Frequency",
       "Template Title",
       "Template Text",
       "Template ID",
@@ -580,6 +669,7 @@ const NotificationCalendar = () => {
         `"${(task.description || "").replace(/"/g, '""')}"`,
         task.date,
         task.sendNotification === "yes" ? "Yes" : "No",
+        task.frequency || "once", // Include frequency
         task.sendNotification === "yes"
           ? `"${(task.template_title || "").replace(/"/g, '""')}"`
           : "",
@@ -790,13 +880,20 @@ const NotificationCalendar = () => {
                             {task.description}
                           </p>
                         )}
-                        {task.sendNotification === "yes" && (
-                          <div className="mt-2">
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          {task.sendNotification === "yes" && (
                             <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
                               SMS Notification
                             </span>
-                          </div>
-                        )}
+                          )}
+                          {task.frequency && task.frequency !== "once" && (
+                            <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+                              {task.frequency === "alternate"
+                                ? "Alternate Days"
+                                : "Everyday"}
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <div className="flex items-center gap-1">
                         <button
@@ -893,6 +990,38 @@ const NotificationCalendar = () => {
                 </Select>
               </div>
 
+              {/* Frequency Selection */}
+              {newTask.sendNotification === "yes" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Frequency
+                  </label>
+                  <Select
+                    value={newTask.frequency}
+                    onValueChange={(value) =>
+                      setNewTask({ ...newTask, frequency: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select frequency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="once">Once</SelectItem>
+                      <SelectItem value="alternate">Alternate Days</SelectItem>
+                      <SelectItem value="everyday">Everyday</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {newTask.frequency === "once" &&
+                      "SMS will be sent only once"}
+                    {newTask.frequency === "alternate" &&
+                      "SMS will be sent every alternate day from the start date until the task date"}
+                    {newTask.frequency === "everyday" &&
+                      "SMS will be sent every day from the start date until the task date"}
+                  </p>
+                </div>
+              )}
+
               {/* Template Selection */}
               {newTask.sendNotification === "yes" && (
                 <div className="space-y-4">
@@ -977,6 +1106,11 @@ const NotificationCalendar = () => {
                         filterDate={(date) => date > new Date()}
                         wrapperClassName="w-full"
                       />
+                      <p className="text-xs text-gray-500 mt-1">
+                        If not selected, SMS will start immediately. With
+                        frequency settings, multiple SMS will be sent based on
+                        your selection.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1048,6 +1182,21 @@ const NotificationCalendar = () => {
                   {selectedTask.sendNotification === "yes" ? "Yes" : "No"}
                 </div>
               </div>
+
+              {/* Show Frequency */}
+              {selectedTask.sendNotification === "yes" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Frequency
+                  </label>
+                  <div className="p-3 bg-gray-50 border border-gray-200 rounded-md">
+                    {selectedTask.frequency === "once" && "Once"}
+                    {selectedTask.frequency === "alternate" && "Alternate Days"}
+                    {selectedTask.frequency === "everyday" && "Everyday"}
+                    {!selectedTask.frequency && "Once (Default)"}
+                  </div>
+                </div>
+              )}
 
               {selectedTask.sendNotification === "yes" &&
                 selectedTask.template_text && (
@@ -1158,10 +1307,40 @@ const NotificationCalendar = () => {
             <DialogTitle>Send SMS Confirmation</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p>
-              Are you sure you want to send this SMS notification? This action
-              cannot be undone.
-            </p>
+            <div>
+              <p className="mb-2">
+                Are you sure you want to send SMS notification(s)?
+              </p>
+              {taskToSendSms && (
+                <div className="text-sm bg-blue-50 p-3 rounded-md border">
+                  <div className="font-medium mb-2">SMS Details:</div>
+                  <div>
+                    <span className="font-medium">Frequency:</span>{" "}
+                    {taskToSendSms.frequency === "once"
+                      ? "Once"
+                      : taskToSendSms.frequency === "alternate"
+                        ? "Alternate Days"
+                        : "Everyday"}
+                  </div>
+                  <div>
+                    <span className="font-medium">Start Date:</span>{" "}
+                    {taskToSendSms.scheduleDate
+                      ? format(new Date(taskToSendSms.scheduleDate), "PPP")
+                      : "Now (Immediate)"}
+                  </div>
+                  <div>
+                    <span className="font-medium">End Date:</span>{" "}
+                    {format(taskToSendSms.taskAddedDate, "PPP")}
+                  </div>
+                  {taskToSendSms.frequency !== "once" && (
+                    <div className="text-xs text-gray-600 mt-2">
+                      Multiple SMS will be sent based on the frequency selected
+                      until the task date.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
             {smsError && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-md">
                 <div className="text-red-500 text-sm">{smsError}</div>
@@ -1184,7 +1363,7 @@ const NotificationCalendar = () => {
                 disabled={smsLoading}
                 className="bg-blue-600 hover:bg-blue-700"
               >
-                {smsLoading ? "Sending..." : "Send SMS"}
+                {smsLoading ? "Sending SMS..." : "Confirm & Send"}
               </Button>
             </div>
           </div>
