@@ -51,6 +51,13 @@ const templates: TemplateMap = {
       template_id: "191053",
       title: "Orchard Booking Marketting",
     },
+    {
+      template:
+        "Dear Grower!Your Site {#var#} has been assigned a Layout team. Team lead {#var#}, they will visit the site on {#var#}.Team ZIRAAT®",
+      "variable-count": 3,
+      template_id: "194373",
+      title: "Layout Team Deployment",
+    },
   ],
 };
 
