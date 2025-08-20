@@ -116,6 +116,8 @@ export default function MarkettingPage() {
           setIsUploading(false);
           return;
         }
+        // Limit to first 500 numbers only
+        nums = nums.slice(0, 500);
         if (!nums.length) {
           toast({
             title: "No numbers found",
@@ -203,33 +205,41 @@ export default function MarkettingPage() {
         return;
       }
     }
-    const numbersStr = numbers.join(",");
-    const payload = {
-      header: "ZIRAAT",
-      template_id: selectedTemplate.template_id,
-      numbers: numbersStr,
-      variables_values: templateVariables,
-    };
-    setSendLoading(true); // <-- Set loading
+    // Chunk numbers into batches of 50 (max), and send sequentially
+    const chunks = [];
+    for (let i = 0; i < numbers.length && i < 500; i += 50) {
+      chunks.push(numbers.slice(i, Math.min(i + 50, numbers.length)));
+    }
+    setSendLoading(true);
     try {
-      const res = await fetch("/api/send-sms", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const result = await res.json();
-      if (res.ok) {
-        toast({
-          title: "SMS Sent",
-          description: "Messages sent successfully!",
-          className: "bg-green-500 text-white border border-green-700",
+      for (let i = 0; i < chunks.length; i++) {
+        const chunk = chunks[i];
+        const payload = {
+          header: "ZIRAAT",
+          template_id: selectedTemplate.template_id,
+          numbers: chunk.join(","),
+          variables_values: templateVariables,
+        };
+        const res = await fetch("/api/send-sms", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
         });
-        setSelectedTemplate(null);
-        setTemplateVariables([]);
-        setNumbers([]); // <--- clear numbers list
-      } else {
-        throw new Error(result?.error || "Failed to send SMS");
+        const result = await res.json();
+        if (!res.ok) {
+          throw new Error(
+            result?.error || `Failed to send batch ${i + 1} of ${chunks.length}`
+          );
+        }
       }
+      toast({
+        title: "SMS Sent",
+        description: `Messages sent successfully in ${chunks.length} batch(es).`,
+        className: "bg-green-500 text-white border border-green-700",
+      });
+      setSelectedTemplate(null);
+      setTemplateVariables([]);
+      setNumbers([]);
     } catch (e) {
       toast({
         title: "Send Error",
@@ -237,7 +247,7 @@ export default function MarkettingPage() {
         className: "bg-red-500 text-white border border-red-700",
       });
     } finally {
-      setSendLoading(false); // <-- Done loading
+      setSendLoading(false);
     }
   };
 
@@ -288,7 +298,7 @@ export default function MarkettingPage() {
             </div>
             <div className="mt-4 flex items-center justify-center gap-2 text-sm text-orange-600">
               <AlertCircle className="w-4 h-4" />
-              <span>Only the first 50 numbers will be extracted.</span>
+              <span>Only the first 500 numbers will be extracted.</span>
             </div>
           </div>
         </div>
