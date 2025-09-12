@@ -59,8 +59,6 @@ const templates: TemplateMap = {
       title: "Layout Team Deployment",
     },
 
-
-
     {
       template:
         "Dear Grower {#project_id#}! Your payment schedule has been updated with us as follows: First Instalment of Rs. {#first_instalment_amount#} due on {#first_instalment_date#}, Second Instalment of Rs. {#second_instalment_amount#} due on {#second_instalment_date#}, Third Instalment of Rs. {#third_instalment_amount#} due on {#third_instalment_date#}. Please make payments as scheduled to avoid any service delay. Team ZIRAAT® {#website_link#}.",
