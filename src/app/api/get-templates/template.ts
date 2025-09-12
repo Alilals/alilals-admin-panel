@@ -22,7 +22,7 @@ const templates: TemplateMap = {
     },
   ],
 
-  ZIRAAT: [
+  ZIRAAT: [ 
     {
       template:
         "Dear Grower! your OTP for login is {#var#}. Do not share it with anyone!Team ZIRAAT®",
